@@ -31,32 +31,3 @@ const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["c
   return createQwikCity({ render, qwikCityPlan, manifest })(request, env, ctx);
 };
 
-class ChatRoom {
-  private state: DurableObjectState;
-  private env: Env;
-  private sessions: any[];
-
-  constructor(state: DurableObjectState, env: Env) {
-    this.state = state;
-    this.env = env;
-    this.sessions = [];
-  }
-
-  async fetch() {
-    const pair = new WebSocketPair();
-    await this.handleSession(pair[1]);
-    return new Response(null, { status: 101, webSocket: pair[0] });
-  }
-
-  private async handleSession(webSocket: WebSocket) {
-    // @ts-ignore
-    webSocket.accept();
-    this.sessions.push(webSocket);
-
-    webSocket.onmessage = msg => {
-      webSocket.send(msg.data);
-    }
-  }
-}
-
-export { fetch, ChatRoom };

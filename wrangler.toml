@@ -4,7 +4,7 @@ compatibility_date = "2023-05-09"
 # Add your account ID here
 account_id = ""
 
-#main = "src/chat.mjs"
+main = "worker.js"
 
 [durable_objects]
 bindings = [
