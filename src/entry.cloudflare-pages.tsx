@@ -48,7 +48,8 @@ class ChatRoom {
   }
 
   private async handleSession(webSocket: WebSocket) {
-    (webSocket as unknown as CFWebSocket).accept();
+    // @ts-ignore
+    webSocket.accept();
     this.sessions.push(webSocket);
 
     webSocket.onmessage = msg => {
