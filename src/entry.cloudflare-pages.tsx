@@ -19,12 +19,11 @@ declare global {
   interface QwikCityPlatform extends PlatformCloudflarePages {
   }
 }
-
-export default {
-  async fetch(request: Request) {
-    if (request.headers.get("upgrade") === "websocket") {
-      return new Response("yo");
-    }
-    return createQwikCity({ render, qwikCityPlan, manifest });
+const fetch = async (request: Request) => {
+  if (request.headers.get("upgrade") === "websocket") {
+    return new Response("yo");
   }
+  return createQwikCity({ render, qwikCityPlan, manifest });
 };
+
+export { fetch };
