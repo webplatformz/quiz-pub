@@ -19,11 +19,18 @@ declare global {
   interface QwikCityPlatform extends PlatformCloudflarePages {
   }
 }
-const fetch = async (request: Request) => {
+
+type Env = Record<string, any> & {
+  ASSETS: {
+    fetch: (req: Request) => Response;
+  };
+};
+
+const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages['ctx']) => {
   if (request.headers.get("upgrade") === "websocket") {
     return new Response("yo");
   }
-  return createQwikCity({ render, qwikCityPlan, manifest });
+  return createQwikCity({ render, qwikCityPlan, manifest })(request, env, ctx);
 };
 
 export { fetch };
