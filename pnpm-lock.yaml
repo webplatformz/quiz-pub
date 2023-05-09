@@ -1,12 +1,17 @@
 lockfileVersion: '6.0'
 
+patchedDependencies:
+  '@builder.io/qwik-city@1.0.0':
+    hash: tvf6tcncv5accdkgqig6rfth2u
+    path: patches/@builder.io__qwik-city@1.0.0.patch
+
 devDependencies:
   '@builder.io/qwik':
     specifier: 1.0.0
     version: 1.0.0(undici@5.22.0)
   '@builder.io/qwik-city':
     specifier: ^1.0.0
-    version: 1.0.0
+    version: 1.0.0(patch_hash=tvf6tcncv5accdkgqig6rfth2u)
   '@cloudflare/workers-types':
     specifier: ^4.20230419.0
     version: 4.20230419.0
@@ -67,7 +72,7 @@ devDependencies:
 
 packages:
 
-  /@builder.io/qwik-city@1.0.0:
+  /@builder.io/qwik-city@1.0.0(patch_hash=tvf6tcncv5accdkgqig6rfth2u):
     resolution: {integrity: sha512-nHlDsvYHRWpSmRgg3bb93shn0p1OeMLvBYyIINitGDPxRSK1RyddtJXFAE24MlEEwzetF82xSte3SiC55oPUaQ==}
     engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
     dependencies:
@@ -79,6 +84,7 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+    patched: true
 
   /@builder.io/qwik@1.0.0(undici@5.22.0):
     resolution: {integrity: sha512-U1eTIKTBUiW2dbPMCaTzS7K1bMCI9ovtfsvdduwnVThGXRSrX+v2X4U/UmHHPzfOjC55X5wYLc17cw5EwFBVVA==}

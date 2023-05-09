@@ -7,10 +7,7 @@
  * - https://qwik.builder.io/docs/deployments/cloudflare-pages/
  *
  */
-import {
-  createQwikCity,
-  type PlatformCloudflarePages
-} from "@builder.io/qwik-city/middleware/cloudflare-pages";
+import { createQwikCity, type PlatformCloudflarePages } from "@builder.io/qwik-city/middleware/cloudflare-pages";
 import qwikCityPlan from "@qwik-city-plan";
 import { manifest } from "@qwik-client-manifest";
 import render from "./entry.ssr";
@@ -26,11 +23,12 @@ type Env = Record<string, any> & {
   };
 };
 
-const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages['ctx']) => {
+const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["ctx"]) => {
   if (request.headers.get("upgrade") === "websocket") {
-    return new Response("yo");
+    const room = env.rooms.get("YOIHO");
+    return room.fetch();
   }
   return createQwikCity({ render, qwikCityPlan, manifest })(request, env, ctx);
 };
 
-export { fetch };
+export {fetch};

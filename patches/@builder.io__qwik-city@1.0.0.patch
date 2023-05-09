@@ -1,0 +1,13 @@
+diff --git a/adapters/cloudflare-pages/vite/index.mjs b/adapters/cloudflare-pages/vite/index.mjs
+index 8b354b4404c5672240c9e60d027194170997f37e..ac9935bf1e4724351adfbde24bb10d2efbbda3ee 100644
+--- a/adapters/cloudflare-pages/vite/index.mjs
++++ b/adapters/cloudflare-pages/vite/index.mjs
+@@ -48,7 +48,7 @@ function cloudflarePagesAdapter(opts = {}) {
+         const importPath = relative(clientOutDir, join(serverOutDir, "entry.cloudflare-pages"));
+         await fs.promises.writeFile(
+           workerJsPath,
+-          `import { fetch } from "${importPath}"; export default { fetch };`
++          `import { fetch, ChatRoom } from "${importPath}"; export default { fetch, ChatRoom };`
+         );
+       }
+     }
