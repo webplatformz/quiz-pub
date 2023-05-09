@@ -7,6 +7,9 @@ devDependencies:
   '@builder.io/qwik-city':
     specifier: ^1.0.0
     version: 1.0.0
+  '@cloudflare/workers-types':
+    specifier: ^4.20230419.0
+    version: 4.20230419.0
   '@playwright/test':
     specifier: ^1.32.3
     version: 1.32.3
@@ -91,6 +94,10 @@ packages:
     resolution: {integrity: sha512-MVbXLbTcAotOPUj0pAMhVtJ+3/kFkwJqc5qNOleOZTv6QkZZABDMS21dSrSlVswEHwrpWC03e4fWytjqKvuE2A==}
     dependencies:
       mime: 3.0.0
+    dev: true
+
+  /@cloudflare/workers-types@4.20230419.0:
+    resolution: {integrity: sha512-MfNBlHrI/ekRkbLtdAo23D4hkXF+3QD92OCwuXxCUK73HtMHuBqkMp9T/8KFbKNRCnz7PzUderc7Jr5m3eeW3g==}
     dev: true
 
   /@esbuild-plugins/node-globals-polyfill@0.1.1(esbuild@0.16.3):

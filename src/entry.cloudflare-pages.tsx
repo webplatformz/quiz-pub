@@ -9,16 +9,28 @@
  */
 import {
   createQwikCity,
-  type PlatformCloudflarePages,
-} from '@builder.io/qwik-city/middleware/cloudflare-pages';
-import qwikCityPlan from '@qwik-city-plan';
-import { manifest } from '@qwik-client-manifest';
-import render from './entry.ssr';
+  type PlatformCloudflarePages
+} from "@builder.io/qwik-city/middleware/cloudflare-pages";
+import qwikCityPlan from "@qwik-city-plan";
+import { manifest } from "@qwik-client-manifest";
+import render from "./entry.ssr";
 
 declare global {
-  interface QwikCityPlatform extends PlatformCloudflarePages {}
+  interface QwikCityPlatform extends PlatformCloudflarePages {
+  }
 }
 
-const fetch = createQwikCity({ render, qwikCityPlan, manifest });
+type Env = Record<string, any> & {
+  ASSETS: {
+    fetch: (req: Request) => Response;
+  };
+};
+
+const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages['ctx']) => {
+  if (request.headers.get("upgrade") === "websocket") {
+    return new Response("yo");
+  }
+  return createQwikCity({ render, qwikCityPlan, manifest })(request, env, ctx);
+};
 
 export { fetch };
