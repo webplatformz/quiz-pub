@@ -31,3 +31,4 @@ const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["c
   return createQwikCity({ render, qwikCityPlan, manifest })(request, env, ctx);
 };
 
+export {fetch};
