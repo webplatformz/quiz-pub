@@ -25,7 +25,8 @@ type Env = Record<string, any> & {
 
 const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["ctx"]) => {
   if (request.headers.get("upgrade") === "websocket") {
-    return new Response("yo");
+    const room = env.rooms.get("YOIHO");
+    return room.fetch();
   }
   return createQwikCity({ render, qwikCityPlan, manifest })(request, env, ctx);
 };
