@@ -47,19 +47,12 @@ export default component$(() => {
         </button>
         <button onClick$={async () => {
           try {
-            const result = await fetch(`/quiz`, {
-              method: "POST",
-              body: JSON.stringify({
-                quizId: kvID.value
-              })
-            }).then(res => res.text());
-            console.log(result);
             let hostname = window.location.host;
             if(!hostname) {
               hostname = 'quiz-pub.pages.dev';
             }
             const wss = document.location.protocol === "http:" ? "ws://" : "wss://";
-            const ws = new WebSocket(wss + hostname + "/quiz/" + result);
+            const ws = new WebSocket(wss + hostname + "/quiz/" + kvID.value);
             ws.onmessage = (msg) => {
               console.log(msg);
             };

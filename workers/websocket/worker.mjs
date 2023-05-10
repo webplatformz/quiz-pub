@@ -9,7 +9,8 @@ const fetch = async (request, env) => {
   if (!path[1]) {
     return new Response("wtf are you doing 2", { status: 400 });
   }
-  const room = env.rooms.get(path[1]);
+  const id = env.rooms.idFromName(path[1]);
+  const room = env.rooms.get(id);
   return room.fetch(request, env);
 };
 
