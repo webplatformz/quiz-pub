@@ -57,49 +57,42 @@ export default component$(() => {
                                     <>
                                         <input
                                             type="text"
+                                            id={`round-${index}`}
+                                            key={`round-${index}`}
                                             name={`round-${index}`}
                                             value={round.name}
                                             class={editStyles.input}
                                             onInput$={(e: any) => {
-                                                // quiz.rounds[index] = {
-                                                //     name: e.target.value,
-                                                //     questions: round.questions
-                                                // };
-                                                quiz.rounds.push({
-                                                    name: e.target.value,
-                                                    questions: quiz.rounds[index].questions
-                                                })
-                                                quiz.rounds.splice(index, 1);
+                                                const round = quiz.rounds[index];
+                                                round.name = e.target.value;
+                                                quiz.rounds = quiz.rounds.map((r, i) => (i === index ? round : r));
                                             }}
                                         />
 
                                         {(round.questions || []).map((question, qIndex) => (
                                             <>
-                                                <label for={`Q${qIndex}`}>
-                                                    {`Q${qIndex}`}
+                                                <label for={`round-${index}-Q-${qIndex}`}>
+                                                    {`Question ${qIndex}`}
                                                 </label>
                                                 <input type="text"
-                                                       id={`Q${qIndex}`}
-                                                       name={`Q${qIndex}`}
+                                                       id={`round-${index}-Q-${qIndex}`}
+                                                       key={`round-${index}-Q-${qIndex}`}
+                                                       name={`round-${index}-Q-${qIndex}`}
                                                        value={question}
                                                        class={editStyles.input}
                                                        onInput$={(e: any) => {
-                                                           const qs = [...quiz.rounds[index].questions];
-                                                           qs.push(e.target.value);
-                                                           qs.splice(qIndex, 1);
-
-                                                           quiz.rounds.push({
-                                                               name: quiz.rounds[index].name,
-                                                               questions: qs
-                                                           })
-                                                           quiz.rounds.splice(index, 1);
+                                                           const round = quiz.rounds[index];
+                                                           round.questions = round.questions.map((q, i) => (i === qIndex ? e.target.value : q));
+                                                           quiz.rounds = quiz.rounds.map((r, i) => (i === index ? round : r));
                                                        }}
                                                 />
                                             </>
                                         ))}
                                         <button type="button"
                                                 onClick$={() => {
-                                                    quiz.rounds[index].questions = ['default'];
+                                                    const round = quiz.rounds[index];
+                                                    round.questions = [...round.questions, 'Here comes the question'];
+                                                    quiz.rounds = quiz.rounds.map((r, i) => (i === index ? round : r));
                                                 }}>
                                             Add Question
                                         </button>
