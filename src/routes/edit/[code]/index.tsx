@@ -69,7 +69,7 @@ export default component$(() => {
                                         />
 
                                         {(round.questions || []).map((question, qIndex) => (
-                                            <div key={`round-${index}-Q-${qIndex}`}>
+                                            <div key={`round-${index}-Q-${qIndex}`} class={editStyles.roundQuestions}>
                                                 <label for={`round-${index}-Q-${qIndex}`}>
                                                     {`Question ${qIndex}`}
                                                 </label>
