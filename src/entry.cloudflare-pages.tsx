@@ -11,6 +11,7 @@ import { createQwikCity, type PlatformCloudflarePages } from "@builder.io/qwik-c
 import qwikCityPlan from "@qwik-city-plan";
 import { manifest } from "@qwik-client-manifest";
 import render from "./entry.ssr";
+import { randomUUID } from "crypto";
 
 declare global {
   interface QwikCityPlatform extends PlatformCloudflarePages {
@@ -32,16 +33,24 @@ const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["c
     return createQwikCity({ render, qwikCityPlan, manifest })(request, env, ctx);
   }
 
-  if(isWebsocketRequest) {
+  if (isWebsocketRequest) {
     return env.QUIZ_PUB.fetch(url);
   }
 
-  if (path[0] === "api") {
-    env.QUIZ_PUB_KV.put('this is a test', 'this is a value');
-    return new Response('biatch');
+  if (path[0] !== "api") {
+    return new Response("Not found", { status: 404 });
   }
 
-  return new Response("Not found", { status: 404 });
+  if (request.method === "PUT") {
+    const uuid = randomUUID();
+    env.QUIZ_PUB_KV.put(uuid, "this is a value");
+
+    return new Response(uuid);
+  } else if (request.method === "GET") {
+    const id = url.searchParams.get("id");
+    const quiz = env.QUIZ_PUB_KV.get(id);
+    return new Response(quiz);
+  }
 };
 
 export { fetch };
