@@ -14,15 +14,18 @@ const useDBTest = routeLoader$(async (requestEv) => {
 });
 
 export default component$(() => {
+  const code = useLocation().params.code;
   const supabaseUrl = process.env.PUBLIC_SUPABASE_URL!;
   const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY!;
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
   supabase
     .channel("changes")
-    .on("postgres_changes", { event: "*", schema: "public", table: "game" }, payload => console.log(payload))
+    .on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "game", filter: `invite_code=eq.${code}` },
+        payload => console.log(payload))
     .subscribe();
   const games = useDBTest();
-  const code = useLocation().params.code;
   return (
     <>
       <h1>ROOM: {code}</h1>
