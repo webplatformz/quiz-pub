@@ -51,5 +51,9 @@
     "patchedDependencies": {
       "@builder.io/qwik-city@1.0.0": "patches/@builder.io__qwik-city@1.0.0.patch"
     }
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.21.0",
+    "supabase-auth-helpers-qwik": "^0.0.2"
   }
 }
