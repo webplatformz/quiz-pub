@@ -54,11 +54,10 @@ export default component$(() => {
                         {(quiz.rounds.length && (
                             <ul>
                                 {quiz.rounds.map((round, index) => (
-                                    <>
+                                    <li key={`round-${index}`}>
                                         <input
                                             type="text"
                                             id={`round-${index}`}
-                                            key={`round-${index}`}
                                             name={`round-${index}`}
                                             value={round.name}
                                             class={editStyles.input}
@@ -70,13 +69,12 @@ export default component$(() => {
                                         />
 
                                         {(round.questions || []).map((question, qIndex) => (
-                                            <>
+                                            <div key={`round-${index}-Q-${qIndex}`}>
                                                 <label for={`round-${index}-Q-${qIndex}`}>
                                                     {`Question ${qIndex}`}
                                                 </label>
                                                 <input type="text"
                                                        id={`round-${index}-Q-${qIndex}`}
-                                                       key={`round-${index}-Q-${qIndex}`}
                                                        name={`round-${index}-Q-${qIndex}`}
                                                        value={question}
                                                        class={editStyles.input}
@@ -86,7 +84,7 @@ export default component$(() => {
                                                            quiz.rounds = quiz.rounds.map((r, i) => (i === index ? round : r));
                                                        }}
                                                 />
-                                            </>
+                                            </div>
                                         ))}
                                         <button type="button"
                                                 onClick$={() => {
@@ -96,7 +94,7 @@ export default component$(() => {
                                                 }}>
                                             Add Question
                                         </button>
-                                    </>
+                                    </li>
                                 ))}
                             </ul>
                         )) || <span>No rounds present</span>}
