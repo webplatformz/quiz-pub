@@ -36,9 +36,10 @@ const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["c
     return env.QUIZ_PUB.fetch(url);
   }
 
-  // if (path[0] === "api") {
-  //   return env.QUIZ_PUB.fetch(, env, ctx);
-  // }
+  if (path[0] === "api") {
+    env.QUIZ_PUB_KV.put('this is a test', 'this is a value');
+    return new Response('biatch');
+  }
 
   return new Response("Not found", { status: 404 });
 };
