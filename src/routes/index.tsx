@@ -2,8 +2,8 @@ import { component$, useStore } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 
 export default component$(() => {
-  const store = useStore({ text: "Hi!", kvID: '' });
-
+  const store = useStore({ text: "Hi!", kvID: "" });
+  
   return (
     <>
       <span>KV Quiz ID: {store.kvID}</span>
@@ -34,7 +34,7 @@ export default component$(() => {
       }}>
         Create Quiz
       </button>
-      {store.kvID !== '' && <>
+      {store.kvID !== "" && <>
         <button onClick$={async () => {
           try {
             const quiz = await fetch(`/quiz?id=${store.kvID}`, {
@@ -55,10 +55,10 @@ export default component$(() => {
             };
             ws.onopen = () => {
               ws.send(JSON.stringify({ message: "whatup" }));
-              setTimeout(() => {
-                ws.close();
-                console.log("close it");
-              }, 10000);
+            };
+
+            ws.onclose = () => {
+              console.log("closed");
             };
           } catch (e) {
             console.log(e);
