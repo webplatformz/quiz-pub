@@ -37,7 +37,7 @@ const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["c
     return env.QUIZ_PUB.fetch(request, env, ctx);
   }
 
-  if (path[0] !== "game") {
+  if (path[0] !== "quiz") {
     return new Response("Not found", { status: 404 });
   }
 
