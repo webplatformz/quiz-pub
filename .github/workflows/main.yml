@@ -1,0 +1,29 @@
+name: Build and Deploy
+on: [push]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.2.4
+        with:
+          version: '8.4.0' # optional
+          # If specified, run `pnpm install`
+          run_install: true # optional, default is null
+
+      - name: Deploy to Cloudflare Workers with Wrangler
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          workingDirectory: workers/websocket
