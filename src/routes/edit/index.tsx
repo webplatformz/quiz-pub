@@ -9,7 +9,7 @@ export default component$(() => {
     const linkTemplate = `/edit/${createShortGUID()}`;
     return (
         <section class="section bright">
-            <a href={linkTemplate} >Create Quiz</a>
+            <a href={linkTemplate} class="button">Create Quiz</a>
         </section>
     );
 });
