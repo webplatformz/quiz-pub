@@ -47,6 +47,9 @@ export default component$(() => {
                             <ul class={editStyles.list}>
                                 {quiz.rounds.map((round, index) => (
                                     <li key={`round-${index}`}>
+                                        <label for={`round-${index}`}>
+                                            {`Round ${index}`}
+                                        </label>
                                         <input
                                             type="text"
                                             id={`round-${index}`}
@@ -71,6 +74,7 @@ export default component$(() => {
                                                 }}>
                                             Add Question
                                         </button>
+                                        <div></div>
                                     </li>
                                 ))}
                             </ul>
@@ -113,7 +117,7 @@ interface QuestionProps {
 }
 export const QuestionList = component$<QuestionProps>((props) => {
     return (
-        <div class={editStyles.roundQuestions}>
+        <>
             <label for={`round-${props.roundIndex}-Q-${props.questionIndex}`}>
                 {`Question ${props.questionIndex}`}
             </label>
@@ -128,6 +132,6 @@ export const QuestionList = component$<QuestionProps>((props) => {
                        props.quiz.rounds = props.quiz.rounds.map((r, i) => (i === props.roundIndex ? round : r));
                    }}
             />
-        </div>
+        </>
     );
 });
