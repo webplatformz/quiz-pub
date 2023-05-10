@@ -8,7 +8,7 @@ export default component$(() => {
 
   const test = server$(()=>{
     // @ts-ignore
-    env.QUIZ_PUB_KV.put('this is a test', 'this is a value');
+    QUIZ_PUB_KV.put('this is a test', 'this is a value');
   })
 
   const setCount = $((newValue: number) => {
