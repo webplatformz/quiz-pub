@@ -12,6 +12,13 @@
 
 .list li {
   list-style: none;
+  border: 1px solid white;
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: inherit;
 }
 
 .empty {

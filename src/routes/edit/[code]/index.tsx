@@ -2,7 +2,7 @@ import { component$, useStore, useStyles$ } from '@builder.io/qwik';
 import { Form, routeAction$, useLocation, z, zod$ } from '@builder.io/qwik-city';
 
 import editStyles from '../edit.module.css';
-import styles from '../../styles.css?inline';
+import styles from '../styles.css?inline';
 import type { QuizSave } from "~/lib/models/quiz-save.model";
 
 export const useSubmitFormAction = routeAction$(
@@ -52,7 +52,7 @@ export default component$(() => {
                     </button>
                     <p>
                         {(quiz.rounds.length && (
-                            <ul>
+                            <ul class={editStyles.list}>
                                 {quiz.rounds.map((round, index) => (
                                     <li key={`round-${index}`}>
                                         <input
