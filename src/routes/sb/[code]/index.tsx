@@ -1,7 +1,7 @@
-import { component$ } from "@builder.io/qwik";
+import { $, component$, useTaskQrl } from "@builder.io/qwik";
 import { routeLoader$, useLocation } from "@builder.io/qwik-city";
-import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "supabase-auth-helpers-qwik";
+import { supabase } from "~/lib/db";
 
 const useDBTest = routeLoader$(async (requestEv) => {
   const supabaseClient = createServerClient(
@@ -15,22 +15,31 @@ const useDBTest = routeLoader$(async (requestEv) => {
 
 export default component$(() => {
   const code = useLocation().params.code;
-  const supabaseUrl = process.env.PUBLIC_SUPABASE_URL!;
-  const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY!;
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
   supabase
     .channel("changes")
     .on(
       "postgres_changes",
       { event: "UPDATE", schema: "public", table: "game", filter: `invite_code=eq.${code}` },
-        payload => console.log(payload))
+      payload => console.log(payload))
     .subscribe();
   const games = useDBTest();
+
+  const updateGameName = $(async (ev, game) => {
+    await supabase
+      .from("game")
+      .update({name: ev.target.value})
+      .eq("id", game.id);
+    console.log('UGN', game.id, ev.target.value);
+  });
+
   return (
     <>
       <h1>ROOM: {code}</h1>
       {games.value.data?.map(game => (
-        <h2>Game: {game.name}</h2>
+        <>
+          <h2>Game: {game.name}</h2>
+          <input class="text-black" type="text" value={game.name} onInput$={ev => updateGameName(ev, game)} />
+        </>
       ))}
     </>
   );
