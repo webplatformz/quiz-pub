@@ -21,9 +21,13 @@ h3 {
   margin: 0;
 }
 
+h1,
+h3 {
+  text-align: center;
+}
+
 h1 {
   font-size: 3.2rem;
-  text-align: center;
 }
 h1 .highlight,
 h3 .highlight {

@@ -1,8 +1,8 @@
-import { component$, useStore, useStyles$ } from '@builder.io/qwik';
-import { Form, routeAction$, useLocation, z, zod$ } from '@builder.io/qwik-city';
+import { component$, useStore, useStyles$ } from "@builder.io/qwik";
+import { Form, routeAction$, useLocation, z, zod$ } from "@builder.io/qwik-city";
 
-import editStyles from '../edit.module.css';
-import styles from '../styles.css?inline';
+import editStyles from "../edit.module.css";
+import styles from "../styles.css?inline";
 import type { QuizSave } from "~/lib/models/quiz-save.model";
 
 export const useSubmitFormAction = routeAction$(
@@ -35,7 +35,7 @@ export default component$(() => {
 
     return (
         <section class="section bright">
-            <h1>Quiz: {loc.params.code} quiz: {quiz.name}! rounds: {quiz.rounds.length}</h1>
+            <h3>Quiz (id: {loc.params.code}): «{quiz.name}»</h3>
             <div class="container container-center">
                 <Form action={action} class={editStyles.createQuiz}>
                     <input
