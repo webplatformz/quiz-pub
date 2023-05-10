@@ -21,10 +21,10 @@ export default component$(() => {
       }}>
         -
       </button>
-      {id}
-      {id && <button class="button-dark button-small" onClick$={async () => {
+      {id.value}
+      {id.value && <button class="button-dark button-small" onClick$={async () => {
         try {
-          const quiz = await fetch(`/api?id=${id}`, {
+          const quiz = await fetch(`/api?id=${id.value}`, {
             method: "GET"
           }).then(res => res.text());
           console.log(quiz);
