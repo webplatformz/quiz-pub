@@ -34,11 +34,12 @@ export default component$(() => {
     const loc = useLocation();
     const action = useSubmitFormAction();
     const quiz = useStore(quizInitializier(), {deep: true});
+
     return (
         <section class="section bright">
             <h1>Quiz: {loc.params.code} quiz: {quiz.name}! rounds: {quiz.rounds.length}</h1>
             <div class="container container-center">
-                <Form action={action}>
+                <Form action={action} class={editStyles.createQuiz}>
                     <input
                         type="text"
                         name="name"
@@ -47,20 +48,23 @@ export default component$(() => {
                         class={editStyles.input}
                         onInput$={(e: any) => quiz.name = e.target.value}
                     />
-                    <AddRound quiz={quiz} />
-                    <p>
+                    <AddRound quiz={quiz}/>
+                    <>
                         {(quiz.rounds.length && (
                             <ul class={editStyles.list}>
                                 {quiz.rounds.map((round, index) => (
-                                    <RoundList key={`round-${index}`} quiz={quiz} roundIndex={index} roundName={round.name}/>
+                                    <RoundList
+                                        key={`round-${index}`}
+                                        quiz={quiz}
+                                        roundIndex={index}
+                                        roundName={round.name}
+                                    />
                                 ))}
                             </ul>
                         )) || <span>No rounds present</span>}
-                    </p>
+                    </>
                     <input type="hidden" name="quizState" value={JSON.stringify(quiz)}/>
-                    <p>
-                        <button type="submit">save</button>
-                    </p>
+                    <button type="submit">save</button>
                 </Form>
             </div>
         </section>
@@ -147,14 +151,22 @@ export const RoundList = component$<RoundProps>((props) => {
             />
 
             {(quiz.rounds[rIndex].questions || []).map((question, qIndex) => (
-                <QuestionList key={`round-${rIndex}-Q-${qIndex}`} quiz={quiz} questionIndex={qIndex} roundIndex={rIndex} question={question} />
+                <QuestionList
+                    key={`round-${rIndex}-Q-${qIndex}`}
+                    quiz={quiz}
+                    questionIndex={qIndex}
+                    roundIndex={rIndex}
+                    question={question}
+                />
             ))}
-            <button type="button"
-                    onClick$={() => {
-                        const round = quiz.rounds[rIndex];
-                        round.questions = [...round.questions, 'Here comes the question'];
-                        quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
-                    }}>
+            <button
+                type="button"
+                onClick$={() => {
+                    const round = quiz.rounds[rIndex];
+                    round.questions = [...round.questions, 'Here comes the question'];
+                    quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
+                }}
+            >
                 Add Question
             </button>
             <div></div>
