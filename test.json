@@ -1,0 +1,20 @@
+{
+  "name": "Test Quiz",
+  "rounds": [
+    {
+      "name": "Round 1",
+      "questions": [
+        "Question 1",
+        "Question 2"
+      ]
+    },
+    {
+      "name": "Round 2",
+      "questions": [
+        "Question 1",
+        "Question 2"
+      ]
+    }
+  ],
+  "date": 1683726953218
+}
