@@ -52,11 +52,8 @@ const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["c
     const quiz = await env.QUIZ_PUB_KV.get(id);
     return new Response(quiz);
   } else if (request.method === "POST") {
-    const { quizId }: { quizId: string } = await request.json();
+    const { quizId }: { quizId: string } = await request.clone().json();
     const doId = env.rooms.idFromName(quizId);
-    const quizDo = env.rooms.get(doId);
-    const quiz = await env.QUIZ_PUB_KV.get(quizId);
-    quizDo.createQuiz(quiz);
     return new Response(doId.toString());
   }
 };

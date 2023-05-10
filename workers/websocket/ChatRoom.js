@@ -5,10 +5,6 @@ class ChatRoom {
     this.sessions = [];
   }
 
-  async createQuiz(quiz) {
-    this.state.storage.put('quiz', quiz);
-  }
-
   async fetch(request, env) {
     const pair = new WebSocketPair();
     await this.handleSession(pair[1]);
