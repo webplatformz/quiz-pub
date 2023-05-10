@@ -93,7 +93,7 @@ export const QuestionList = component$<QuestionProps>((props) => {
     const qIndex: number = props.questionIndex;
     const question: string = props.question;
     return (
-        <div>
+        <>
             <label for={`round-${rIndex}-Q-${qIndex}`}>
                 {`Question ${qIndex}`}
             </label>
