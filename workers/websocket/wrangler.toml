@@ -6,6 +6,10 @@ compatibility_date = "2023-05-09"
 
 main = "worker.mjs"
 
+kv_namespaces = [
+    { binding = "QUIZ_PUB_KV", id = "ab3dcafb2f1a40cf974e3ed6a87230bf" }
+]
+
 durable_objects.bindings = [
     { name = "rooms", class_name = "ChatRoom" },
 ]

@@ -33,12 +33,12 @@ const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["c
   }
 
   if(isWebsocketRequest) {
-    return env.QUIZ_PUB.test();
+    return env.QUIZ_PUB.fetch(url);
   }
 
-  if (path[0] === "api") {
-    return env.QUIZ_PUB.fetch(request, env, ctx);
-  }
+  // if (path[0] === "api") {
+  //   return env.QUIZ_PUB.fetch(, env, ctx);
+  // }
 
   return new Response("Not found", { status: 404 });
 };
