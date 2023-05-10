@@ -5,6 +5,11 @@ patchedDependencies:
     hash: tvf6tcncv5accdkgqig6rfth2u
     path: patches/@builder.io__qwik-city@1.0.0.patch
 
+dependencies:
+  '@cfworker/uuid':
+    specifier: ^1.12.4
+    version: 1.12.4
+
 devDependencies:
   '@builder.io/qwik':
     specifier: 1.0.0
@@ -95,6 +100,10 @@ packages:
     dependencies:
       undici: 5.22.0
     dev: true
+
+  /@cfworker/uuid@1.12.4:
+    resolution: {integrity: sha512-aw4lxCT4NLbGqlTScWPtPrZrg4TO6HCZCnNUAeC4yTOvkXjJGdJP6S5NCY9vtP2FruLIC+vYCvUP98fHXtF7kg==}
+    dev: false
 
   /@cloudflare/kv-asset-handler@0.2.0:
     resolution: {integrity: sha512-MVbXLbTcAotOPUj0pAMhVtJ+3/kFkwJqc5qNOleOZTv6QkZZABDMS21dSrSlVswEHwrpWC03e4fWytjqKvuE2A==}

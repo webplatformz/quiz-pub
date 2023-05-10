@@ -11,7 +11,7 @@ import { createQwikCity, type PlatformCloudflarePages } from "@builder.io/qwik-c
 import qwikCityPlan from "@qwik-city-plan";
 import { manifest } from "@qwik-client-manifest";
 import render from "./entry.ssr";
-import { randomUUID } from "crypto";
+import { uuid as randomUUID } from "@cfworker/uuid";
 
 declare global {
   interface QwikCityPlatform extends PlatformCloudflarePages {

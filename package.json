@@ -51,5 +51,8 @@
     "patchedDependencies": {
       "@builder.io/qwik-city@1.0.0": "patches/@builder.io__qwik-city@1.0.0.patch"
     }
+  },
+  "dependencies": {
+    "@cfworker/uuid": "^1.12.4"
   }
 }
