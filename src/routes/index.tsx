@@ -48,8 +48,8 @@ export default component$(() => {
         <button onClick$={async () => {
           try {
             let hostname = window.location.host;
-            if(!hostname) {
-              hostname = 'quiz-pub.pages.dev';
+            if (!hostname) {
+              hostname = "quiz-pub.pages.dev";
             }
             const wss = document.location.protocol === "http:" ? "ws://" : "wss://";
             const ws = new WebSocket(wss + hostname + "/quiz/" + kvID.value);
@@ -57,7 +57,10 @@ export default component$(() => {
               console.log(msg);
             };
             ws.send(JSON.stringify({ message: "whatup" }));
-            ws.close();
+            setTimeout(() => {
+              ws.close();
+              console.log("close it");
+            }, 5000);
           } catch (e) {
             console.log(e);
           }
