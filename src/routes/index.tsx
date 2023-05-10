@@ -11,9 +11,10 @@ export default component$(() => {
       <span>KV Quiz ID: {kvID.value}</span>
       <span>DO Quiz ID: {doID.value}</span>
 
-      <input type="text" value={store.text} onInput$={(e) => {
+      <input value={store.text} onInput$={(e) => {
+        console.log(store.text);
         store.text = (e.target as HTMLInputElement).value;
-      }} placeholder="What should be the quiz?" />
+      }} style="color:black;"/>
 
       <button onClick$={async () => {
         try {
