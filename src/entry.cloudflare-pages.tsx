@@ -11,7 +11,7 @@ import { createQwikCity, type PlatformCloudflarePages } from "@builder.io/qwik-c
 import qwikCityPlan from "@qwik-city-plan";
 import { manifest } from "@qwik-client-manifest";
 import render from "./entry.ssr";
-import { uuid as randomUUID } from "@cfworker/uuid";
+import { randomId } from "~/lib/utils/random-id";
 
 declare global {
   interface QwikCityPlatform extends PlatformCloudflarePages {
@@ -42,10 +42,13 @@ const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["c
   }
 
   if (request.method === "PUT") {
-    const uuid = randomUUID();
+    const uuid = randomId();
+    const value = await env.QUIZ_PUB_KV.get(uuid);
+    if (value) {
+      return new Response("uuid is already taken", { status: 500 });
+    }
     const quiz = await request.json();
     await env.QUIZ_PUB_KV.put(uuid, JSON.stringify(quiz));
-
     return new Response(uuid);
   } else if (request.method === "GET") {
     const id = url.searchParams.get("id");

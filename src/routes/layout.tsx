@@ -1,15 +1,17 @@
-import {component$, Slot, useStyles$} from '@builder.io/qwik';
-import {routeLoader$} from '@builder.io/qwik-city';
+import { component$, Slot, useStyles$ } from "@builder.io/qwik";
+import { routeLoader$ } from "@builder.io/qwik-city";
 
-import styles from './styles.css?inline';
+import styles from "./styles.css?inline";
+import global from "../global.css?inline";
 
 export const useServerTimeLoader = routeLoader$(() => {
   return {
-    date: new Date().toISOString(),
+    date: new Date().toISOString()
   };
 });
 
 export default component$(() => {
+  useStyles$(global);
   useStyles$(styles);
   return (
     <>
