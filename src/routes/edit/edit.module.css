@@ -5,19 +5,14 @@
   gap: 1rem;
 }
 
-.list {
+.round {
   display: flex;
   flex-direction: column;
   gap: 20px;
   color: white;
 }
 
-.list,
-.empty {
-  min-height: 250px;
-}
-
-.list li {
+.round li {
   list-style: none;
   border: 1px solid white;
   border-radius: 1rem;

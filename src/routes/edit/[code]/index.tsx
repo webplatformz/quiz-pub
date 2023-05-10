@@ -48,7 +48,7 @@ export default component$(() => {
                     />
                     <>
                         {(quiz.rounds.length && (
-                            <ul class={editStyles.list}>
+                            <ul class={editStyles.round}>
                                 {quiz.rounds.map((round, index) => (
                                     <RoundList
                                         key={`round-${index}`}
