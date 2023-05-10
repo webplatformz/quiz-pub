@@ -26,6 +26,7 @@ export default component$(() => {
     const isFavoriteSignal = useSignal(false);
     const dadJokeSignal = useDadJoke();
     const favoriteJokeAction = useJokeVoteAction();
+
     useTask$(({ track }) => {
         track(() => isFavoriteSignal.value);
         console.log('FAVORITE (isomorphic)', isFavoriteSignal.value);
@@ -40,13 +41,14 @@ export default component$(() => {
                 <input type="hidden" name="jokeID" value={dadJokeSignal.value.id} />
                 <button name="vote" value="up">👍</button>
                 <button name="vote" value="down">👎</button>
+                <button
+                    onClick$={() => {
+                        isFavoriteSignal.value = !isFavoriteSignal.value;
+                    }}>
+                    {isFavoriteSignal.value ? '❤️' : '🤍'}
+                </button>
             </Form>
-            <button
-                onClick$={() => {
-                    isFavoriteSignal.value = !isFavoriteSignal.value;
-                }}>
-                {isFavoriteSignal.value ? '❤️' : '🤍'}
-            </button>
+
         </section>
     );
 });
