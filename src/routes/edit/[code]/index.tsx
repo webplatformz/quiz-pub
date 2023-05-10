@@ -37,7 +37,7 @@ export default component$(() => {
     const quiz = useStore(quizInitializier(), {deep: true});
 
     return (
-        <section class="section bright">
+        <section class="section bright container">
             <h3>Quiz (id: {loc.params.code}): «{quiz.name}»</h3>
             <div class="container container-center">
                 <Form action={action} class={editStyles.createQuiz}>
@@ -49,21 +49,22 @@ export default component$(() => {
                         class={editStyles.input}
                         onInput$={(e: any) => quiz.name = e.target.value}
                     />
-                    <>
-                        {(quiz.rounds.length && (
-                            <ul class={editStyles.round}>
-                                {quiz.rounds.map((round, index) => (
-                                    <RoundList
-                                        key={`round-${index}`}
-                                        quiz={quiz}
-                                        roundIndex={index}
-                                        roundName={round.name}
-                                    />
-                                ))}
-                            </ul>
-                        )) || <span>No rounds present</span>}
-                    </>
+
+                    {quiz.rounds.length && (
+                        <ul class={editStyles.round}>
+                            {quiz.rounds.map((round, index) => (
+                                <RoundList
+                                    key={`round-${index}`}
+                                    quiz={quiz}
+                                    roundIndex={index}
+                                    roundName={round.name}
+                                />
+                            ))}
+                        </ul>
+                    )}
+
                     <AddRound quiz={quiz}/>
+
                     <input type="hidden" name="quizState" value={JSON.stringify(quiz)}/>
                     <button type="submit">save</button>
                 </Form>
