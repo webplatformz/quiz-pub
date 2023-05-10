@@ -96,7 +96,7 @@ export const QuestionList = component$<QuestionProps>((props) => {
             <input type="text"
                    id={`round-${props.roundIndex}-Q-${props.questionIndex}`}
                    name={`round-${props.roundIndex}-Q-${props.questionIndex}`}
-                   value={props.question}
+                   placeholder={props.question}
                    class={editStyles.input}
                    onInput$={(e: any) => {
                        const round = props.quiz.rounds[props.roundIndex];
@@ -124,7 +124,7 @@ export const RoundList = component$<RoundProps>((props) => {
                 type="text"
                 id={`round-${props.roundIndex}`}
                 name={`round-${props.roundIndex}`}
-                value={props.roundName}
+                placeholder={props.roundName}
                 class={editStyles.input}
                 onInput$={(e: any) => {
                     const round = props.quiz.rounds[props.roundIndex];
