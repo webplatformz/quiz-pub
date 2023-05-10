@@ -1,9 +1,9 @@
-import {component$, useStore, useStyles$} from '@builder.io/qwik';
-import {Form, routeAction$, useLocation, z, zod$} from '@builder.io/qwik-city';
+import { component$, useStore, useStyles$ } from '@builder.io/qwik';
+import { Form, routeAction$, useLocation, z, zod$ } from '@builder.io/qwik-city';
 
 import editStyles from '../edit.module.css';
 import styles from '../../styles.css?inline';
-import type {QuizSave} from "~/lib/models/quiz-save.model";
+import type { QuizSave } from "~/lib/models/quiz-save.model";
 
 export const useSubmitFormAction = routeAction$(
     (props) => {
@@ -53,8 +53,57 @@ export default component$(() => {
                     <p>
                         {(quiz.rounds.length && (
                             <ul>
-                                {quiz.rounds.map((item, index) => (
-                                    <li key={`items-${index}`}>{item.name}</li>
+                                {quiz.rounds.map((round, index) => (
+                                    <>
+                                        <input
+                                            type="text"
+                                            name={`round-${index}`}
+                                            value={round.name}
+                                            class={editStyles.input}
+                                            onInput$={(e: any) => {
+                                                // quiz.rounds[index] = {
+                                                //     name: e.target.value,
+                                                //     questions: round.questions
+                                                // };
+                                                quiz.rounds.push({
+                                                    name: e.target.value,
+                                                    questions: quiz.rounds[index].questions
+                                                })
+                                                quiz.rounds.splice(index, 1);
+                                            }}
+                                        />
+
+                                        {(round.questions || []).map((question, qIndex) => (
+                                            <>
+                                                <label for={`Q${qIndex}`}>
+                                                    {`Q${qIndex}`}
+                                                </label>
+                                                <input type="text"
+                                                       id={`Q${qIndex}`}
+                                                       name={`Q${qIndex}`}
+                                                       value={question}
+                                                       class={editStyles.input}
+                                                       onInput$={(e: any) => {
+                                                           const qs = [...quiz.rounds[index].questions];
+                                                           qs.push(e.target.value);
+                                                           qs.splice(qIndex, 1);
+
+                                                           quiz.rounds.push({
+                                                               name: quiz.rounds[index].name,
+                                                               questions: qs
+                                                           })
+                                                           quiz.rounds.splice(index, 1);
+                                                       }}
+                                                />
+                                            </>
+                                        ))}
+                                        <button type="button"
+                                                onClick$={() => {
+                                                    quiz.rounds[index].questions = ['default'];
+                                                }}>
+                                            Add Question
+                                        </button>
+                                    </>
                                 ))}
                             </ul>
                         )) || <span>No rounds present</span>}
