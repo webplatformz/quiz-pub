@@ -1,27 +1,39 @@
-import { $, component$, useSignal } from "@builder.io/qwik";
+import { component$, useSignal } from "@builder.io/qwik";
 import styles from "./counter.module.css";
-import Gauge from "../gauge";
 
 export default component$(() => {
-  const count = useSignal(70);
-  const setCount = $((newValue: number) => {
-    if (newValue < 0 || newValue > 100) {
-      return;
-    }
-    count.value = newValue;
-  });
-
+  const id = useSignal<string | undefined>();
   return (
     <div class={styles["counter-wrapper"]}>
       <button class="button-dark button-small" onClick$={async () => {
-        await fetch('/api/create');
+        try {
+          const newId = await fetch("/api", {
+            method: "PUT",
+            body: JSON.stringify({
+              quiz: { quiz: "bitch" }
+            })
+          }).then(res => res.text());
+          id.value = newId;
+          localStorage.setItem("quiz", newId);
+        } catch (e) {
+          console.log(e);
+        }
       }}>
         -
       </button>
-      <Gauge value={count.value} />
-      <button class="button-dark button-small" onClick$={() => setCount(count.value + 1)}>
+      {id}
+      {id && <button class="button-dark button-small" onClick$={async () => {
+        try {
+          const quiz = await fetch(`/api?id=${id}`, {
+            method: "GET"
+          }).then(res => res.text());
+          console.log(quiz);
+        } catch (e) {
+          console.log(e);
+        }
+      }}>
         +
-      </button>
+      </button>}
     </div>
   );
 });
