@@ -33,7 +33,7 @@ export default component$(() => {
     useStyles$(styles);
     const loc = useLocation();
     const action = useSubmitFormAction();
-    const quiz = useStore(quizInitializier());
+    const quiz = useStore(quizInitializier(), {deep: true});
     return (
         <section class="section bright">
             <h1>Quiz: {loc.params.code} quiz: {quiz.name}! rounds: {quiz.rounds.length}</h1>
@@ -41,15 +41,7 @@ export default component$(() => {
                 <Form action={action}>
                     <input type="text" name="name" value={quiz.name} class={editStyles.input}
                            onInput$={(e: any) => quiz.name = e.target.value}/>
-                    <button type="button"
-                            onClick$={() => {
-                                quiz.rounds.push({
-                                    name: "Round - " + quiz.rounds.length,
-                                    questions: []
-                                })
-                            }}>
-                        Add Round
-                    </button>
+                    <AddRound quiz={quiz} />
                     <p>
                         {(quiz.rounds.length && (
                             <ul class={editStyles.list}>
@@ -69,22 +61,7 @@ export default component$(() => {
                                         />
 
                                         {(round.questions || []).map((question, qIndex) => (
-                                            <div key={`round-${index}-Q-${qIndex}`} class={editStyles.roundQuestions}>
-                                                <label for={`round-${index}-Q-${qIndex}`}>
-                                                    {`Question ${qIndex}`}
-                                                </label>
-                                                <input type="text"
-                                                       id={`round-${index}-Q-${qIndex}`}
-                                                       name={`round-${index}-Q-${qIndex}`}
-                                                       value={question}
-                                                       class={editStyles.input}
-                                                       onInput$={(e: any) => {
-                                                           const round = quiz.rounds[index];
-                                                           round.questions = round.questions.map((q, i) => (i === qIndex ? e.target.value : q));
-                                                           quiz.rounds = quiz.rounds.map((r, i) => (i === index ? round : r));
-                                                       }}
-                                                />
-                                            </div>
+                                            <QuestionList key={`round-${index}-Q-${qIndex}`} quiz={quiz} questionIndex={qIndex} roundIndex={index} question={question} />
                                         ))}
                                         <button type="button"
                                                 onClick$={() => {
@@ -107,5 +84,49 @@ export default component$(() => {
             </div>
 
         </section>
+    );
+});
+
+
+
+
+export const AddRound = component$<QuizProps>((props) => {
+    return (
+        <button type="button"
+                onClick$={() => {
+                    props.quiz.rounds.push({
+                        name: "Round - " + props.quiz.rounds.length,
+                        questions: []
+                    })
+                }}>
+            Add Round
+        </button>
+    );
+});
+
+interface QuestionProps {
+    quiz: QuizSave;
+    roundIndex: number;
+    questionIndex: number;
+    question: string;
+}
+export const QuestionList = component$<QuestionProps>((props) => {
+    return (
+        <div class={editStyles.roundQuestions}>
+            <label for={`round-${props.roundIndex}-Q-${props.questionIndex}`}>
+                {`Question ${props.questionIndex}`}
+            </label>
+            <input type="text"
+                   id={`round-${props.roundIndex}-Q-${props.questionIndex}`}
+                   name={`round-${props.roundIndex}-Q-${props.questionIndex}`}
+                   value={props.question}
+                   class={editStyles.input}
+                   onInput$={(e: any) => {
+                       const round = props.quiz.rounds[props.roundIndex];
+                       round.questions = round.questions.map((q, i) => (i === props.questionIndex ? e.target.value : q));
+                       props.quiz.rounds = props.quiz.rounds.map((r, i) => (i === props.roundIndex ? round : r));
+                   }}
+            />
+        </div>
     );
 });
