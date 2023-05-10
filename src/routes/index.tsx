@@ -54,7 +54,12 @@ export default component$(() => {
               })
             }).then(res => res.text());
             console.log(result);
-            const ws = new WebSocket(`/quiz/${result}`);
+            let hostname = window.location.host;
+            if(!hostname) {
+              hostname = 'quiz-pub.pages.dev';
+            }
+            const wss = document.location.protocol === "http:" ? "ws://" : "wss://";
+            const ws = new WebSocket(wss + hostname + "/quiz/" + result);
             ws.onmessage = (msg) => {
               console.log(msg);
             };
