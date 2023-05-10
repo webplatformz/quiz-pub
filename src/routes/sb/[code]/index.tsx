@@ -1,46 +1,44 @@
-import { $, component$, useTaskQrl } from "@builder.io/qwik";
+import { $, component$, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { routeLoader$, useLocation } from "@builder.io/qwik-city";
-import { createServerClient } from "supabase-auth-helpers-qwik";
 import { supabase } from "~/lib/db";
 
 const useDBTest = routeLoader$(async (requestEv) => {
-  const supabaseClient = createServerClient(
-    requestEv.env.get("PUBLIC_SUPABASE_URL")!,
-    requestEv.env.get("PUBLIC_SUPABASE_ANON_KEY")!,
-    requestEv
-  );
-  const { data } = await supabaseClient.from("game").select("*");
-  return { data };
+  const { data } = await supabase.from("game")
+    .select("*")
+    .eq("invite_code", requestEv.params.code)
+    .single();
+  return data;
 });
 
 export default component$(() => {
+  const dbTest = useDBTest();
+  const game = useStore({ ...dbTest.value });
   const code = useLocation().params.code;
-  supabase
-    .channel("changes")
-    .on(
-      "postgres_changes",
-      { event: "UPDATE", schema: "public", table: "game", filter: `invite_code=eq.${code}` },
-      payload => console.log(payload))
-    .subscribe();
-  const games = useDBTest();
+
+  useVisibleTask$(() => {
+    supabase
+      .channel("changes")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "game", filter: `invite_code=eq.${code}` },
+        payload => game.name = payload.new.name)
+      .subscribe();
+  });
 
   const updateGameName = $(async (ev, game) => {
     await supabase
       .from("game")
-      .update({name: ev.target.value})
+      .update({ name: ev.target.value })
       .eq("id", game.id);
-    console.log('UGN', game.id, ev.target.value);
   });
 
   return (
     <>
       <h1>ROOM: {code}</h1>
-      {games.value.data?.map(game => (
-        <>
-          <h2>Game: {game.name}</h2>
-          <input class="text-black" type="text" value={game.name} onInput$={ev => updateGameName(ev, game)} />
-        </>
-      ))}
+      <>
+        <h2>Game: {game.name}</h2>
+        <input class="text-black" type="text" value={game.name} onInput$={ev => updateGameName(ev, game)} />
+      </>
     </>
   );
 });
