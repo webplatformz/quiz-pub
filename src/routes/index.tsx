@@ -14,7 +14,7 @@ export default component$(() => {
       <input value={store.text} onInput$={(e) => {
         console.log(store.text);
         store.text = (e.target as HTMLInputElement).value;
-      }} style="color:black;"/>
+      }} style="color:black;" />
 
       <button onClick$={async () => {
         try {
@@ -47,8 +47,11 @@ export default component$(() => {
         </button>
         <button onClick$={async () => {
           try {
-            const result = await fetch(`/quiz/${kvID.value}`, {
-              method: "POST"
+            const result = await fetch(`/quiz`, {
+              method: "POST",
+              body: JSON.stringify({
+                quizId: kvID.value
+              })
             }).then(res => res.text());
             console.log(result);
             const ws = new WebSocket(`/quiz/${result}`);
