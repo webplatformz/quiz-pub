@@ -1,19 +1,21 @@
-import { component$, useSignal, useStore } from "@builder.io/qwik";
+import { component$, useStore } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 
 export default component$(() => {
-  const kvID = useSignal<string | undefined>();
-  const doID = useSignal<string | undefined>();
-  const store = useStore({ text: "Hi!" });
+  const store = useStore({ text: "Hi!", kvID: '' });
 
   return (
     <>
-      <span>KV Quiz ID: {kvID.value}</span>
-      <span>DO Quiz ID: {doID.value}</span>
+      <span>KV Quiz ID: {store.kvID}</span>
 
       <input value={store.text} onInput$={(e) => {
         console.log(store.text);
         store.text = (e.target as HTMLInputElement).value;
+      }} style="color:black;" />
+
+      <input value={store.kvID} onInput$={(e) => {
+        console.log(store.kvID);
+        store.kvID = (e.target as HTMLInputElement).value;
       }} style="color:black;" />
 
       <button onClick$={async () => {
@@ -24,7 +26,7 @@ export default component$(() => {
               quiz: { quiz: "bitch" }
             })
           }).then(res => res.text());
-          kvID.value = newId;
+          store.kvID = newId;
           localStorage.setItem("quiz", newId);
         } catch (e) {
           console.log(e);
@@ -32,10 +34,10 @@ export default component$(() => {
       }}>
         Create Quiz
       </button>
-      {kvID.value && <>
+      {store.kvID !== '' && <>
         <button onClick$={async () => {
           try {
-            const quiz = await fetch(`/quiz?id=${kvID.value}`, {
+            const quiz = await fetch(`/quiz?id=${store.kvID}`, {
               method: "GET"
             }).then(res => res.text());
             store.text = quiz;
@@ -47,7 +49,7 @@ export default component$(() => {
         </button>
         <button onClick$={async () => {
           try {
-            const ws = new WebSocket(`wss://${window.location.host}/quiz/${kvID.value}`);
+            const ws = new WebSocket(`wss://${window.location.host}/quiz/${store.kvID}`);
             ws.onmessage = (msg) => {
               console.log(msg);
             };
@@ -56,7 +58,7 @@ export default component$(() => {
               setTimeout(() => {
                 ws.close();
                 console.log("close it");
-              }, 5000);
+              }, 10000);
             };
           } catch (e) {
             console.log(e);
