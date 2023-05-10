@@ -9,7 +9,7 @@ const useDBTest = routeLoader$(async (requestEv) => {
     requestEv.env.get("PUBLIC_SUPABASE_ANON_KEY")!,
     requestEv
   );
-  const { data } = await supabaseClient.from('game').select('*')
+  const { data } = await supabaseClient.from("game").select("*");
   return { data };
 });
 
@@ -26,7 +26,9 @@ export default component$(() => {
   return (
     <>
       <h1>ROOM: {code}</h1>
-      {games.value}
+      {games.value.data?.map(game => (
+        <h2>Game: {game.name}</h2>
+      ))}
     </>
   );
 });
