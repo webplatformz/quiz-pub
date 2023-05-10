@@ -87,8 +87,9 @@ export default component$(() => {
     );
 });
 
-
-
+interface QuizProps {
+    quiz: QuizSave;
+}
 
 export const AddRound = component$<QuizProps>((props) => {
     return (
