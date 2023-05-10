@@ -109,7 +109,8 @@ ul {
 
 /* BUTTONS -------------------------------------- */
 a.button,
-button {
+button,
+form button {
   background: var(--qwik-light-blue);
   border: none;
   border-radius: 8px;

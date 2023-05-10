@@ -1,3 +1,10 @@
+.createQuiz {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
 .list {
   display: flex;
   flex-direction: column;
@@ -12,11 +19,25 @@
 
 .list li {
   list-style: none;
+  border: 1px solid white;
+  border-radius: 1rem;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-row-gap: inherit;
+  align-items: center;
 }
 
 .empty {
   color: white;
   display: block;
+}
+
+.roundQuestions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: inherit;
 }
 
 .input {
