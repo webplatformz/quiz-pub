@@ -46,32 +46,7 @@ export default component$(() => {
                         {(quiz.rounds.length && (
                             <ul>
                                 {quiz.rounds.map((round, index) => (
-                                    <li key={`round-${index}`}>
-                                        <input
-                                            type="text"
-                                            id={`round-${index}`}
-                                            name={`round-${index}`}
-                                            value={round.name}
-                                            class={editStyles.input}
-                                            onInput$={(e: any) => {
-                                                const round = quiz.rounds[index];
-                                                round.name = e.target.value;
-                                                quiz.rounds = quiz.rounds.map((r, i) => (i === index ? round : r));
-                                            }}
-                                        />
-
-                                        {(round.questions || []).map((question, qIndex) => (
-                                            <QuestionList key={`round-${index}-Q-${qIndex}`} quiz={quiz} questionIndex={qIndex} roundIndex={index} question={question} />
-                                        ))}
-                                        <button type="button"
-                                                onClick$={() => {
-                                                    const round = quiz.rounds[index];
-                                                    round.questions = [...round.questions, 'Here comes the question'];
-                                                    quiz.rounds = quiz.rounds.map((r, i) => (i === index ? round : r));
-                                                }}>
-                                            Add Question
-                                        </button>
-                                    </li>
+                                    <RoundList key={`round-${index}`} quiz={quiz} roundIndex={index} roundName={round.name}/>
                                 ))}
                             </ul>
                         )) || <span>No rounds present</span>}
@@ -129,5 +104,41 @@ export const QuestionList = component$<QuestionProps>((props) => {
                    }}
             />
         </div>
+    );
+});
+
+interface RoundProps {
+    quiz: QuizSave;
+    roundIndex: number
+    roundName: string
+}
+export const RoundList = component$<RoundProps>((props) => {
+    return (
+        <li>
+            <input
+                type="text"
+                id={`round-${props.roundIndex}`}
+                name={`round-${props.roundIndex}`}
+                value={props.roundName}
+                class={editStyles.input}
+                onInput$={(e: any) => {
+                    const round = props.quiz.rounds[props.roundIndex];
+                    round.name = e.target.value;
+                    props.quiz.rounds = props.quiz.rounds.map((r, i) => (i === props.roundIndex ? round : r));
+                }}
+            />
+
+            {(props.quiz.rounds[props.roundIndex].questions || []).map((question, qIndex) => (
+                <QuestionList key={`round-${props.roundIndex}-Q-${qIndex}`} quiz={props.quiz} questionIndex={qIndex} roundIndex={props.roundIndex} question={question} />
+            ))}
+            <button type="button"
+                    onClick$={() => {
+                        const round = props.quiz.rounds[props.roundIndex];
+                        round.questions = [...round.questions, 'Here comes the question'];
+                        props.quiz.rounds = props.quiz.rounds.map((r, i) => (i === props.roundIndex ? round : r));
+                    }}>
+                Add Question
+            </button>
+        </li>
     );
 });
