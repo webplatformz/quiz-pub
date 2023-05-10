@@ -2,7 +2,7 @@ import { component$, useStore, useStyles$ } from '@builder.io/qwik';
 import { Form, routeAction$, useLocation, z, zod$ } from '@builder.io/qwik-city';
 
 import editStyles from '../edit.module.css';
-import styles from '../../styles.css?inline';
+import styles from '../styles.css?inline';
 import type { QuizSave } from "~/lib/models/quiz-save.model";
 
 export const useSubmitFormAction = routeAction$(
@@ -33,7 +33,7 @@ export default component$(() => {
     useStyles$(styles);
     const loc = useLocation();
     const action = useSubmitFormAction();
-    const quiz = useStore(quizInitializier(), {deep:true});
+    const quiz = useStore(quizInitializier(), {deep: true});
     return (
         <section class="section bright">
             <h1>Quiz: {loc.params.code} quiz: {quiz.name}! rounds: {quiz.rounds.length}</h1>
@@ -44,7 +44,7 @@ export default component$(() => {
                     <AddRound quiz={quiz} />
                     <p>
                         {(quiz.rounds.length && (
-                            <ul>
+                            <ul class={editStyles.list}>
                                 {quiz.rounds.map((round, index) => (
                                     <RoundList key={`round-${index}`} quiz={quiz} roundIndex={index} roundName={round.name}/>
                                 ))}
@@ -86,6 +86,7 @@ interface QuestionProps {
     questionIndex: number;
     question: string;
 }
+
 export const QuestionList = component$<QuestionProps>((props) => {
     const quiz = props.quiz;
     const rIndex: number = props.roundIndex;
@@ -99,7 +100,7 @@ export const QuestionList = component$<QuestionProps>((props) => {
             <input type="text"
                    id={`round-${rIndex}-Q-${qIndex}`}
                    name={`round-${rIndex}-Q-${qIndex}`}
-                   value={question}
+                   placeholder={question}
                    class={editStyles.input}
                    onInput$={(e: any) => {
                        const round = quiz.rounds[rIndex];
@@ -107,7 +108,7 @@ export const QuestionList = component$<QuestionProps>((props) => {
                        quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
                    }}
             />
-        </div>
+        </>
     );
 });
 
@@ -116,17 +117,21 @@ interface RoundProps {
     roundIndex: number
     roundName: string
 }
+
 export const RoundList = component$<RoundProps>((props) => {
     const quiz = props.quiz;
     const rIndex: number = props.roundIndex;
     const roundName: string = props.roundName;
     return (
         <li>
+            <label for={`round-${props.roundIndex}`}>
+                {`Round ${props.roundIndex}`}
+            </label>
             <input
                 type="text"
                 id={`round-${rIndex}`}
                 name={`round-${rIndex}`}
-                value={roundName}
+                placeholder={roundName}
                 class={editStyles.input}
                 onInput$={(e: any) => {
                     const round = quiz.rounds[rIndex];
@@ -146,6 +151,7 @@ export const RoundList = component$<RoundProps>((props) => {
                     }}>
                 Add Question
             </button>
+            <div></div>
         </li>
     );
 });
