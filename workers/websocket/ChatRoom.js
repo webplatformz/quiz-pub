@@ -5,7 +5,11 @@ class ChatRoom {
     this.sessions = [];
   }
 
-  async fetch() {
+  async createQuiz(quiz) {
+    this.state.storage.put('quiz', quiz);
+  }
+
+  async fetch(request, env) {
     const pair = new WebSocketPair();
     await this.handleSession(pair[1]);
     return new Response(null, { status: 101, webSocket: pair[0] });
@@ -16,7 +20,7 @@ class ChatRoom {
     this.sessions.push(webSocket);
 
     webSocket.onmessage = msg => {
-      webSocket.send(msg.data);
+      webSocket.send(`${this.state.storage.get('quiz')} ${msg.data}`);
     };
   }
 }

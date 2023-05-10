@@ -34,22 +34,30 @@ const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["c
   }
 
   if (isWebsocketRequest) {
-    return env.QUIZ_PUB.fetch(url);
+    return env.QUIZ_PUB.fetch(request, env, ctx);
   }
 
-  if (path[0] !== "api") {
+  if (path[0] !== "game") {
     return new Response("Not found", { status: 404 });
   }
 
   if (request.method === "PUT") {
     const uuid = randomUUID();
-    env.QUIZ_PUB_KV.put(uuid, "this is a value");
+    const quiz = await request.json();
+    await env.QUIZ_PUB_KV.put(uuid, JSON.stringify(quiz));
 
     return new Response(uuid);
   } else if (request.method === "GET") {
     const id = url.searchParams.get("id");
-    const quiz = env.QUIZ_PUB_KV.get(id);
+    const quiz = await env.QUIZ_PUB_KV.get(id);
     return new Response(quiz);
+  } else if (request.method === "POST") {
+    const { quizId }: { quizId: string } = await request.json();
+    const doId = env.rooms.idFromName(quizId);
+    const quizDo = env.rooms.get(doId);
+    const quiz = await env.QUIZ_PUB_KV.get(quizId);
+    quizDo.createQuiz(quiz);
+    return new Response(doId.toString());
   }
 };
 
