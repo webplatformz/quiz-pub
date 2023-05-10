@@ -45,9 +45,20 @@ export default component$(() => {
           Load Quiz
         </button>
         <button onClick$={async () => {
-          await fetch('/quiz', {
-            method: 'POST'
-          })
+          try {
+            const result = await fetch(`/quiz/${kvID.value}`, {
+              method: "POST"
+            }).then(res => res.text());
+            console.log(result);
+            const ws = new WebSocket(`/quiz/${result}`);
+            ws.onmessage = (msg) => {
+              console.log(msg);
+            };
+            ws.send(JSON.stringify({ message: "whatup" }));
+            ws.close();
+          } catch (e) {
+            console.log(e);
+          }
         }}>
           Run Quiz
         </button>
