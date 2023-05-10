@@ -21,11 +21,9 @@ export const useSubmitFormAction = routeAction$(
 
 export const quizInitializier = (() => {
     return {
-        id: "",
         name: "",
         rounds: [],
-        date: new Date().getTime(),
-        deleted: false
+        date: new Date().getTime()
     } as QuizSave;
 });
 
