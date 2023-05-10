@@ -1,16 +1,15 @@
 import {component$, useStore, useStyles$} from '@builder.io/qwik';
 import {Form, routeAction$, useLocation, z, zod$} from '@builder.io/qwik-city';
-import type {QuizState} from '~/lib/models/quiz-state.model';
 
 import editStyles from '../edit.module.css';
 import styles from '../../styles.css?inline';
+import type {QuizSave} from "~/lib/models/quiz-save.model";
 
 export const useSubmitFormAction = routeAction$(
-    (props: QuizState) => {
+    (props) => {
         console.log('props', props);
         const newQuiz = JSON.parse(props.quizState);
         console.log('Name deserialized', newQuiz.name);
-        //console.log('props', props.quizState.name);
         return {
             success: true,
         };
@@ -22,15 +21,12 @@ export const useSubmitFormAction = routeAction$(
 
 export const quizInitializier = (() => {
     return {
+        id: "",
         name: "",
-        joinCode: "",
-        adminCode: "",
-        players: [],
         rounds: [],
-        questions: [],
-        answers: [],
-        currentRound: 1
-    } as QuizState;
+        date: new Date().getTime(),
+        deleted: false
+    } as QuizSave;
 });
 
 export default component$(() => {
@@ -48,8 +44,8 @@ export default component$(() => {
                     <button type="button"
                             onClick$={() => {
                                 quiz.rounds.push({
-                                    id: quiz.rounds.length,
-                                    text: "Init Roundname - " + quiz.rounds.length
+                                    name: "Round - " + quiz.rounds.length,
+                                    questions: []
                                 })
                             }}>
                         Add Round
@@ -58,7 +54,7 @@ export default component$(() => {
                         {(quiz.rounds.length && (
                             <ul>
                                 {quiz.rounds.map((item, index) => (
-                                    <li key={`items-${index}`}>{item.text}</li>
+                                    <li key={`items-${index}`}>{item.name}</li>
                                 ))}
                             </ul>
                         )) || <span>No rounds present</span>}
