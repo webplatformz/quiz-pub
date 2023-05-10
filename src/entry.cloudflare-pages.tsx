@@ -24,11 +24,23 @@ type Env = Record<string, any> & {
 };
 
 const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["ctx"]) => {
-  if (request.headers.get("upgrade") === "websocket") {
-    const room = env.rooms.get("YOIHO");
-    return room.fetch();
+  const url = new URL(request.url);
+  const path = url.pathname.slice(1).split("/");
+  const isWebsocketRequest = request.headers.get("Upgrade") === "websocket";
+  if (!path[0] && !isWebsocketRequest) {
+    // Serve our HTML at the root path.
+    return createQwikCity({ render, qwikCityPlan, manifest })(request, env, ctx);
   }
-  return createQwikCity({ render, qwikCityPlan, manifest })(request, env, ctx);
+
+  if(isWebsocketRequest) {
+    return env.QUIZ_PUB.test();
+  }
+
+  if (path[0] === "api") {
+    return env.QUIZ_PUB.fetch(request, env, ctx);
+  }
+
+  return new Response("Not found", { status: 404 });
 };
 
-export {fetch};
+export { fetch };
