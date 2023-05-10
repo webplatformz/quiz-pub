@@ -1,5 +1,3 @@
-import {fetch} from 'dist/_worker';
-
 class ChatRoom {
   constructor(state, env) {
     this.state = state;
@@ -14,14 +12,13 @@ class ChatRoom {
   }
 
   async handleSession(webSocket) {
-    // @ts-ignore
     webSocket.accept();
     this.sessions.push(webSocket);
 
     webSocket.onmessage = msg => {
       webSocket.send(msg.data);
-    }
+    };
   }
 }
 
-export { fetch, ChatRoom };
+export { ChatRoom };
