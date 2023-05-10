@@ -22,7 +22,10 @@ export const useSubmitFormAction = routeAction$(
 export const quizInitializier = (() => {
     return {
         name: "",
-        rounds: [],
+        rounds: [{
+            name: "Round - 1",
+            questions: ["Question 1"]
+        }],
         date: new Date().getTime()
     } as QuizSave;
 });
@@ -79,8 +82,8 @@ export const AddRound = component$<QuizProps>((props) => {
         <button type="button"
                 onClick$={() => {
                     quiz.rounds.push({
-                        name: "Round - " + quiz.rounds.length,
-                        questions: []
+                        name: "Round - " + (quiz.rounds.length + 1),
+                        questions: ["Question 1"]
                     })
                 }}>
             Add Round
@@ -103,7 +106,7 @@ export const QuestionList = component$<QuestionProps>((props) => {
     return (
         <>
             <label for={`round-${rIndex}-Q-${qIndex}`}>
-                {`Question ${qIndex}`}
+                {`Question ${qIndex + 1}`}
             </label>
             <input type="text"
                    id={`round-${rIndex}-Q-${qIndex}`}
@@ -133,7 +136,7 @@ export const RoundList = component$<RoundProps>((props) => {
     return (
         <li>
             <label for={`round-${props.roundIndex}`}>
-                {`Round ${props.roundIndex}`}
+                {`Round ${props.roundIndex + 1}`}
             </label>
             <input
                 type="text"
@@ -154,14 +157,14 @@ export const RoundList = component$<RoundProps>((props) => {
                     quiz={quiz}
                     questionIndex={qIndex}
                     roundIndex={rIndex}
-                    question={question}
+                    question={`Question ${qIndex + 1}`}
                 />
             ))}
             <button
                 type="button"
                 onClick$={() => {
                     const round = quiz.rounds[rIndex];
-                    round.questions = [...round.questions, 'Here comes the question'];
+                    round.questions = [...round.questions, `Question ${round.questions.length + 1}`];
                     quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
                 }}
             >
