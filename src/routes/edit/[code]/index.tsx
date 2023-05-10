@@ -39,8 +39,14 @@ export default component$(() => {
             <h1>Quiz: {loc.params.code} quiz: {quiz.name}! rounds: {quiz.rounds.length}</h1>
             <div class="container container-center">
                 <Form action={action}>
-                    <input type="text" name="name" value={quiz.name} class={editStyles.input}
-                           onInput$={(e: any) => quiz.name = e.target.value}/>
+                    <input
+                        type="text"
+                        name="name"
+                        value={quiz.name}
+                        placeholder="Quiz name"
+                        class={editStyles.input}
+                        onInput$={(e: any) => quiz.name = e.target.value}
+                    />
                     <AddRound quiz={quiz} />
                     <p>
                         {(quiz.rounds.length && (
