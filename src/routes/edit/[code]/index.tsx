@@ -46,7 +46,6 @@ export default component$(() => {
                         class={editStyles.input}
                         onInput$={(e: any) => quiz.name = e.target.value}
                     />
-                    <AddRound quiz={quiz}/>
                     <>
                         {(quiz.rounds.length && (
                             <ul class={editStyles.list}>
@@ -61,6 +60,7 @@ export default component$(() => {
                             </ul>
                         )) || <span>No rounds present</span>}
                     </>
+                    <AddRound quiz={quiz}/>
                     <input type="hidden" name="quizState" value={JSON.stringify(quiz)}/>
                     <button type="submit">save</button>
                 </Form>
