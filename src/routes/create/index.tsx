@@ -32,8 +32,8 @@ export const quizInitializier = (() => {
   return {
     name: "",
     rounds: [{
-      name: "Round - 1",
-      questions: ["Question 1"]
+      name: "",
+      questions: [""]
     }]
   } as QuizSave;
 });

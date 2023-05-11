@@ -52,8 +52,8 @@ const AddRound = component$<QuizProps>((props) => {
     <button type="button"
             onClick$={() => {
               quiz.rounds.push({
-                name: "Round - " + (quiz.rounds.length + 1),
-                questions: ["Question 1"]
+                name: "",
+                questions: [""]
               });
             }}>
       Add Round
@@ -113,7 +113,7 @@ const RoundList = component$<RoundProps>((props) => {
         type="text"
         id={`round-${rIndex}`}
         name={`round-${rIndex}`}
-        placeholder={roundName}
+        placeholder={`Round ${rIndex + 1}`}
         class={editStyles.input}
         value={quiz.rounds[rIndex].name}
         onInput$={(e: any) => {
@@ -136,7 +136,7 @@ const RoundList = component$<RoundProps>((props) => {
         type="button"
         onClick$={() => {
           const round = quiz.rounds[rIndex];
-          round.questions = [...round.questions, `Question ${round.questions.length + 1}`];
+          round.questions = [...round.questions, ''];
           quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
         }}
       >
