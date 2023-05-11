@@ -88,7 +88,7 @@ const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["c
                 }
             } else if (request.method === "GET") {
                 const id = url.searchParams.get("id");
-                const quiz: QuizSave = await env.QUIZ_PUB_KV.get(id);
+                const quiz: QuizSave = JSON.parse(await env.QUIZ_PUB_KV.get(id));
                 quiz.adminToken = undefined;
                 return new Response(JSON.stringify(quiz ?? {}));
             }
