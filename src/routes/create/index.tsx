@@ -5,7 +5,7 @@ import { supabase } from "~/lib/db";
 import { QuizSave } from "~/lib/models/quiz-save.model";
 
 export const useSubmitFormAction = routeAction$(
-  async (props) => {
+  async (props, re) => {
     const newQuiz = JSON.parse(props.quizState);
     const { data } = await supabase
       .from("quiz")
@@ -14,10 +14,7 @@ export const useSubmitFormAction = routeAction$(
       .single();
     console.log(data);
     if (data) {
-      return {
-        success: true,
-        redirect: `/edit/${data.id}`
-      };
+      re.redirect(301, `/edit/${data.id}`);
     }
     return {
       success: false
