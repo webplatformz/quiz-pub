@@ -72,6 +72,7 @@ const QuestionList = component$<QuestionProps>((props) => {
   const quiz = props.quiz;
   const rIndex: number = props.roundIndex;
   const qIndex: number = props.questionIndex;
+  const round = quiz.rounds[rIndex];
   const question: string = props.question;
   return (
     <>
@@ -81,15 +82,25 @@ const QuestionList = component$<QuestionProps>((props) => {
       <input type="text"
              id={`round-${rIndex}-Q-${qIndex}`}
              name={`round-${rIndex}-Q-${qIndex}`}
-             placeholder={question}
-             value={quiz.rounds[rIndex].questions[qIndex]}
+             placeholder={`Question ${qIndex + 1}`}
+             value={question}
              class={editStyles.input}
              onInput$={(e: any) => {
-               const round = quiz.rounds[rIndex];
                round.questions = round.questions.map((q, i) => (i === qIndex ? e.target.value : q));
                quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
              }}
       />
+      <button
+        type="button"
+        onClick$={() => {
+          console.log("deleting BEFORE", qIndex, question, round.questions);
+          round.questions = (round.questions || []).filter((q, i) => i !== qIndex);
+          console.log("deleting AFTER", qIndex, question, round.questions);
+          quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
+        }}
+      >
+        X
+      </button>
     </>
   );
 });
@@ -115,13 +126,13 @@ const RoundList = component$<RoundProps>((props) => {
         name={`round-${rIndex}`}
         placeholder={`Round ${rIndex + 1}`}
         class={editStyles.input}
-        value={quiz.rounds[rIndex].name}
         onInput$={(e: any) => {
           const round = quiz.rounds[rIndex];
           round.name = e.target.value;
           quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
         }}
       />
+      <div></div>
 
       {(quiz.rounds[rIndex].questions || []).map((question, qIndex) => (
         <QuestionList
@@ -129,20 +140,19 @@ const RoundList = component$<RoundProps>((props) => {
           quiz={quiz}
           questionIndex={qIndex}
           roundIndex={rIndex}
-          question={`Question ${qIndex + 1}`}
+          question={question}
         />
       ))}
       <button
         type="button"
         onClick$={() => {
           const round = quiz.rounds[rIndex];
-          round.questions = [...round.questions, ''];
+          round.questions = [...round.questions, ""];
           quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
         }}
       >
         Add Question
       </button>
-      <div></div>
     </li>
   );
 });
