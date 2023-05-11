@@ -11,7 +11,7 @@ import { createQwikCity, type PlatformCloudflarePages } from "@builder.io/qwik-c
 import qwikCityPlan from "@qwik-city-plan";
 import { manifest } from "@qwik-client-manifest";
 import render from "./entry.ssr";
-import { uuid as randomUUID } from "@cfworker/uuid";
+import { randomId } from "~/lib/utils/random-id";
 
 declare global {
   interface QwikCityPlatform extends PlatformCloudflarePages {
@@ -28,29 +28,29 @@ const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["c
   const url = new URL(request.url);
   const path = url.pathname.slice(1).split("/");
   const isWebsocketRequest = request.headers.get("Upgrade") === "websocket";
-  if (!path[0] && !isWebsocketRequest) {
-    // Serve our HTML at the root path.
-    return createQwikCity({ render, qwikCityPlan, manifest })(request, env, ctx);
-  }
-
+  
   if (isWebsocketRequest) {
-    return env.QUIZ_PUB.fetch(url);
+    return env.QUIZ_PUB.fetch(request, env, ctx);
   }
 
-  if (path[0] !== "api") {
-    return new Response("Not found", { status: 404 });
+  if (path[0] === "quiz") {
+    if (request.method === "PUT") {
+      const uuid = randomId();
+      const value = await env.QUIZ_PUB_KV.get(uuid);
+      if (value) {
+        return new Response("uuid is already taken", { status: 500 });
+      }
+      const quiz = await request.json();
+      await env.QUIZ_PUB_KV.put(uuid, JSON.stringify(quiz));
+      return new Response(uuid);
+    } else if (request.method === "GET") {
+      const id = url.searchParams.get("id");
+      const quiz = await env.QUIZ_PUB_KV.get(id);
+      return new Response(quiz);
+    }
   }
 
-  if (request.method === "PUT") {
-    const uuid = randomUUID();
-    env.QUIZ_PUB_KV.put(uuid, "this is a value");
-
-    return new Response(uuid);
-  } else if (request.method === "GET") {
-    const id = url.searchParams.get("id");
-    const quiz = env.QUIZ_PUB_KV.get(id);
-    return new Response(quiz);
-  }
+  return createQwikCity({ render, qwikCityPlan, manifest })(request, env, ctx);
 };
 
 export { fetch };

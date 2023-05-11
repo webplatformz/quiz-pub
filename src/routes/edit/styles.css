@@ -21,9 +21,13 @@ h3 {
   margin: 0;
 }
 
+h1,
+h3 {
+  text-align: center;
+}
+
 h1 {
   font-size: 3.2rem;
-  text-align: center;
 }
 h1 .highlight,
 h3 .highlight {
@@ -68,7 +72,6 @@ code {
 
 ul {
   margin: 0;
-  padding-left: 20px;
 }
 
 /* CONTAINER ------------------------------------ */
@@ -109,7 +112,8 @@ ul {
 
 /* BUTTONS -------------------------------------- */
 a.button,
-button {
+button,
+form button {
   background: var(--qwik-light-blue);
   border: none;
   border-radius: 8px;
@@ -184,7 +188,6 @@ button.button-small {
   height: 18px;
   content: '';
   display: inline-block;
-  margin-right: 20px;
   position: relative;
   top: 2px;
 }

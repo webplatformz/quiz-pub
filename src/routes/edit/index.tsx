@@ -1,4 +1,6 @@
-import { component$ } from '@builder.io/qwik';
+import { component$, useStyles$ } from "@builder.io/qwik";
+
+import styles from "./styles.css?inline";
 
 export const createShortGUID = () => {
     const firstPart = (Math.random() * 46656) | 0;
@@ -6,10 +8,12 @@ export const createShortGUID = () => {
 };
 
 export default component$(() => {
+    useStyles$(styles);
     const linkTemplate = `/edit/${createShortGUID()}`;
+
     return (
         <section class="section bright container">
-            <h1>Quizzes</h1>
+            <h3>Quizzes</h3>
             <div class="container container-center">
                 <a href={linkTemplate} class="button">Create Quiz</a>
             </div>
