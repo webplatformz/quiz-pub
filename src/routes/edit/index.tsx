@@ -5,12 +5,12 @@ import editStyles from "./edit.module.css";
 import styles from "./styles.css?inline";
 import type { QuizSave } from "~/lib/models/quiz-save.model";
 
-export const quizInitializier = (() => {
+export const quizInitializer = (() => {
     return {
         name: "",
         rounds: [{
             name: "Round - 1",
-            questions: ["Question 1"]
+            questions: [""]
         }],
         date: new Date().getTime()
     } as QuizSave;
@@ -19,7 +19,7 @@ export const quizInitializier = (() => {
 export default component$(() => {
     useStyles$(styles);
     const loc = useLocation();
-    const quiz = useStore(quizInitializier(), { deep: true });
+    const quiz = useStore(quizInitializer(), { deep: true });
     const save = $(async () => {
         console.log(JSON.stringify(quiz));
         try {
@@ -89,8 +89,8 @@ export const AddRound = component$<QuizProps>((props) => {
         <button type="button"
                 onClick$={() => {
                     quiz.rounds.push({
-                        name: "Round - " + (quiz.rounds.length + 1),
-                        questions: ["Question 1"]
+                        name: "Round " + (quiz.rounds.length + 1),
+                        questions: [""]
                     });
                 }}>
             Add Round
@@ -109,6 +109,7 @@ export const QuestionList = component$<QuestionProps>((props) => {
     const quiz = props.quiz;
     const rIndex: number = props.roundIndex;
     const qIndex: number = props.questionIndex;
+    const round = quiz.rounds[rIndex];
     const question: string = props.question;
     return (
         <>
@@ -118,14 +119,25 @@ export const QuestionList = component$<QuestionProps>((props) => {
             <input type="text"
                    id={`round-${rIndex}-Q-${qIndex}`}
                    name={`round-${rIndex}-Q-${qIndex}`}
-                   placeholder={question}
+                   placeholder={`${round.name} - Question ${qIndex + 1}`}
+                   value={question}
                    class={editStyles.input}
                    onInput$={(e: any) => {
-                       const round = quiz.rounds[rIndex];
                        round.questions = round.questions.map((q, i) => (i === qIndex ? e.target.value : q));
                        quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
                    }}
             />
+            <button
+                type="button"
+                onClick$={() => {
+                    console.log('deleting BEFORE', qIndex, question, round.questions);
+                    round.questions = (round.questions || []).filter((q, i) => i !== qIndex);
+                    console.log('deleting AFTER', qIndex, question, round.questions);
+                    quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
+                }}
+            >
+                X
+            </button>
         </>
     );
 });
@@ -157,6 +169,7 @@ export const RoundList = component$<RoundProps>((props) => {
                     quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
                 }}
             />
+            <div></div>
 
             {(quiz.rounds[rIndex].questions || []).map((question, qIndex) => (
                 <QuestionList
@@ -164,19 +177,20 @@ export const RoundList = component$<RoundProps>((props) => {
                     quiz={quiz}
                     questionIndex={qIndex}
                     roundIndex={rIndex}
-                    question={`Question ${qIndex + 1}`}
+                    question={question}
                 />
             ))}
             <button
                 type="button"
                 onClick$={() => {
                     const round = quiz.rounds[rIndex];
-                    round.questions = [...round.questions, `Question ${round.questions.length + 1}`];
+                    round.questions = [...round.questions, ""];
                     quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
                 }}
             >
                 Add Question
             </button>
+            <div></div>
             <div></div>
         </li>
     );
