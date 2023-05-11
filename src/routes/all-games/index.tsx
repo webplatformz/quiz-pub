@@ -5,8 +5,8 @@ type StoredQuiz = {
     id: string,
     lastSaved: string,
     name: string,
-    rounds: string,
-    questions: string,
+    rounds: string | number,
+    questions: string | number,
 }
 
 export default component$(() => {
@@ -31,14 +31,14 @@ export default component$(() => {
 });
 
 
-const Quiz = component$<StoredQuiz>(({ id, lastSaved, name, rounds, questions }) => {
+export const Quiz = component$<StoredQuiz>(({ id, lastSaved, name, rounds, questions }) => {
     return <section class="w-full p-4 bg-slate-800 rounded flex flex-col gap-2">
         <span class="text-2xl font-bold">{name}</span>
         <span>Rounds: {rounds}</span>
         <span>Questions: {questions}</span>
         <span>{lastSaved}</span>
         <div class="flex flex-row w-full justify-between gap-4 mt-2">
-            <Link class="w-1/3 p-3" href={`/edit?code=${id}`}>Edit</Link>
+            <Link class="w-1/3 p-3" href={`/edit/${id}`}>Edit</Link>
             <button class="w-1/3 p-3">Run</button>
             <button class="w-1/3 p-3 bg-red-700">Delete</button>
         </div>
