@@ -1,6 +1,5 @@
-import { component$, useContext, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
-import { QuizContext } from "~/routes";
 
 
 export default component$(() => {
