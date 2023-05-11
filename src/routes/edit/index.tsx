@@ -1,10 +1,9 @@
-import { $, component$, useStore, useStyles$ } from "@builder.io/qwik";
+import { $, component$, useStore, useStyles$, useVisibleTask$ } from "@builder.io/qwik";
 import { routeLoader$, useLocation } from "@builder.io/qwik-city";
 
 import editStyles from "./edit.module.css";
 import styles from "./styles.css?inline";
 import type { QuizSave } from "~/lib/models/quiz-save.model";
-import { fetch} from "undici";
 
 export const quizInitializer = (() => {
     return {
@@ -24,11 +23,11 @@ export const useSavedQuiz = routeLoader$(async (requestEvent) => {
         return quizInitializer();
     }
 
-    const quiz = await fetch(`/api/quiz?id=${code}`, {
+    const quiz: QuizSave = await fetch(`https://quiz-pub.pages.dev/api/quiz?id=${code}`, {
         method: "GET"
     }).then(res => res.json());
     console.log(quiz);
-    return quizInitializer();
+    return quiz;
 });
 
 export default component$(() => {
@@ -36,14 +35,18 @@ export default component$(() => {
     const savedQuiz = useSavedQuiz();
     const loc = useLocation();
     const quiz = useStore(savedQuiz.value, { deep: true });
-    // useVisibleTask$(async () => {
-    //     const query = new URLSearchParams(window.location.search);
-    //     const code = query.get("code");
-    //     if (!code) {
-    //         return;
-    //     }
-    //
-    // });
+    useVisibleTask$(async () => {
+        const query = new URLSearchParams(window.location.search);
+        const code = query.get("code");
+        if (!code) {
+            return;
+        }
+        const cfQuiz: QuizSave = await fetch(`/api/quiz?id=${code}`, {
+            method: "GET"
+        }).then(res => res.json());
+        console.log(cfQuiz);
+
+    });
 
     const save = $(async () => {
         console.log(JSON.stringify(quiz));
@@ -155,9 +158,9 @@ export const QuestionList = component$<QuestionProps>((props) => {
             <button
                 type="button"
                 onClick$={() => {
-                    console.log('deleting BEFORE', qIndex, question, round.questions);
+                    console.log("deleting BEFORE", qIndex, question, round.questions);
                     round.questions = (round.questions || []).filter((q, i) => i !== qIndex);
-                    console.log('deleting AFTER', qIndex, question, round.questions);
+                    console.log("deleting AFTER", qIndex, question, round.questions);
                     quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
                 }}
             >
