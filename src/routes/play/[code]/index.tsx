@@ -10,7 +10,7 @@ export default component$(() => {
         const code = location.params.code;
         try {
             location.params;
-            const ws = new WebSocket(`wss://${window.location.host}/${code}`);
+            const ws = new WebSocket(`wss://${window.location.host}/joinquiz/${code}`);
             ws.onmessage = (msg) => {
                 console.log(msg.data);
             };
