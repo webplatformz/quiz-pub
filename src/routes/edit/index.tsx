@@ -1,5 +1,5 @@
 import { type DocumentHead, routeLoader$ } from "@builder.io/qwik-city";
-import { $, component$, useStore, useStyles$ } from "@builder.io/qwik";
+import { $, component$, useSignal, useStore, useStyles$, useVisibleTask$ } from "@builder.io/qwik";
 
 import editStyles from "./edit.module.css";
 import styles from "./styles.css?inline";
@@ -34,19 +34,32 @@ export default component$(() => {
     useStyles$(styles);
     const savedQuiz = useSavedQuiz();
     const quiz = useStore(savedQuiz.value, { deep: true });
+    const adminToken = useSignal("");
+    useVisibleTask$(() => {
+        const quizzes: StoredQuiz[] = JSON.parse(localStorage.getItem("quizzes") ?? "[]");
+        const sq = quizzes.find(storedQuiz => storedQuiz.id === quiz.id);
+        if (!sq) {
+            return;
+        }
+        adminToken.value = sq.adminToken;
+    });
 
     const save = $(async () => {
         try {
-            const newQuizId = await fetch("/api/quiz", {
+            const newQuizId: { uuid: string, adminToken: string } = await fetch("/api/quiz", {
                 method: "PUT",
+                headers: {
+                    authorization: quiz.adminToken ?? ""
+                },
                 body: JSON.stringify(quiz)
-            }).then(res => res.text());
+            }).then(res => res.json());
             const newQuiz = {
-                id: newQuizId,
+                id: newQuizId.uuid,
                 name: quiz.name,
                 rounds: quiz.rounds.length,
                 questions: quiz.rounds.reduce((prev, current) => prev + current.questions.length, 0),
-                lastSaved: quiz.date
+                lastSaved: quiz.date,
+                adminToken: newQuizId.adminToken
             };
             const quizzes = JSON.parse(localStorage.getItem("quizzes") ?? "[]");
             const quizToReplace = quizzes.find((lsQuiz: StoredQuiz) => lsQuiz.id === newQuiz.id);
@@ -213,5 +226,5 @@ export const RoundList = component$<RoundProps>((props) => {
 });
 
 export const head: DocumentHead = {
-    title: 'Quiz Pub',
+    title: "Quiz Pub"
 };

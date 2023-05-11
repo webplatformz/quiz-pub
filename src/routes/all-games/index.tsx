@@ -2,6 +2,7 @@ import { component$, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 
 export type StoredQuiz = {
+    adminToken: string,
     id: string,
     lastSaved: string,
     name: string,

@@ -1,4 +1,5 @@
 export interface QuizSave {
+  adminToken: string | undefined;
   id: string | undefined;
   name: string;
   rounds: Round[];
