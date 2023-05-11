@@ -5,8 +5,7 @@ import { useLocation } from "@builder.io/qwik-city";
 export default component$(() => {
     const location = useLocation();
     const connected = useSignal(false);
-    useVisibleTask$(({ track, cleanup }) => {
-        track(() => connected.value);
+    useVisibleTask$(({ cleanup }) => {
         const code = location.params.code;
         try {
             location.params;
@@ -29,6 +28,6 @@ export default component$(() => {
         }
     });
     return <div>
-        <span>Connected: {connected.value}</span>
+        <span>Connected: {`${connected.value}`}</span>
     </div>;
 });
