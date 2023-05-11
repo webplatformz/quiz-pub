@@ -1,9 +1,9 @@
-import {routeLoader$} from "@builder.io/qwik-city";
+import { routeLoader$ } from "@builder.io/qwik-city";
 import { $, component$, useStore, useStyles$ } from "@builder.io/qwik";
 
 import editStyles from "./edit.module.css";
 import styles from "./styles.css?inline";
-import type {QuizSave} from "~/lib/models/quiz-save.model";
+import type { QuizSave } from "~/lib/models/quiz-save.model";
 
 export const quizInitializer = (() => {
     return {
@@ -82,7 +82,7 @@ export default component$(() => {
                         </ul>
                     )}
 
-                    <AddRound quiz={quiz}/>
+                    <AddRound quiz={quiz} />
                     <button type="submit" onClick$={save}>save</button>
                 </div>
             </div>

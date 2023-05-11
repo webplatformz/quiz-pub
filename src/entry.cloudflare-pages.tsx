@@ -12,6 +12,7 @@ import qwikCityPlan from "@qwik-city-plan";
 import { manifest } from "@qwik-client-manifest";
 import render from "./entry.ssr";
 import { randomId } from "~/lib/utils/random-id";
+import { QuizSave } from "~/lib/models/quiz-save.model";
 
 declare global {
     interface QwikCityPlatform extends PlatformCloudflarePages {
@@ -36,12 +37,15 @@ const fetch = async (request: Request, env: Env, ctx: PlatformCloudflarePages["c
     if (path[0] === "api") {
         if (path[1] === "quiz") {
             if (request.method === "PUT") {
-                const uuid = randomId();
+                const quiz: QuizSave = await request.json();
+                const uuid = quiz.id ?? randomId();
                 const value = await env.QUIZ_PUB_KV.get(uuid);
-                if (value) {
+                if (quiz.id && !value) {
+                    return new Response("uuid is not yet taken", { status: 400 });
+                } else if (!quiz.id && value) {
                     return new Response("uuid is already taken", { status: 500 });
                 }
-                const quiz = await request.json();
+
                 await env.QUIZ_PUB_KV.put(uuid, JSON.stringify(quiz));
                 return new Response(uuid);
             } else if (request.method === "GET") {
