@@ -3,6 +3,7 @@ import { routeLoader$ } from "@builder.io/qwik-city";
 
 import styles from "./styles.css?inline";
 import global from "../global.css?inline";
+import Header from "~/components/header/header";
 
 export const useServerTimeLoader = routeLoader$(() => {
   return {
@@ -15,6 +16,7 @@ export default component$(() => {
   useStyles$(styles);
   return (
     <>
+      <Header />
       <main>
         <Slot />
       </main>
