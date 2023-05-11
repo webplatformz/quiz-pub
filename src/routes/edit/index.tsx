@@ -1,5 +1,5 @@
-import {$, component$, useStore, useStyles$, useVisibleTask$} from "@builder.io/qwik";
 import {routeLoader$} from "@builder.io/qwik-city";
+import { $, component$, useStore, useStyles$ } from "@builder.io/qwik";
 
 import editStyles from "./edit.module.css";
 import styles from "./styles.css?inline";
@@ -26,29 +26,15 @@ export const useSavedQuiz = routeLoader$(async (requestEvent) => {
     const quiz: QuizSave = await fetch(`https://quiz-pub.pages.dev/api/quiz?id=${code}`, {
         method: "GET"
     }).then(res => res.json());
-    console.log(quiz);
     return quiz;
 });
 
 export default component$(() => {
     useStyles$(styles);
     const savedQuiz = useSavedQuiz();
-    const quiz = useStore(savedQuiz.value, {deep: true});
-    useVisibleTask$(async () => {
-        const query = new URLSearchParams(window.location.search);
-        const code = query.get("code");
-        if (!code) {
-            return;
-        }
-        const cfQuiz: QuizSave = await fetch(`/api/quiz?id=${code}`, {
-            method: "GET"
-        }).then(res => res.json());
-        console.log(cfQuiz);
-
-    });
+    const quiz = useStore(savedQuiz.value, { deep: true });
 
     const save = $(async () => {
-        console.log(JSON.stringify(quiz));
         try {
             const newQuizId = await fetch("/api/quiz", {
                 method: "PUT",
@@ -64,7 +50,6 @@ export default component$(() => {
             const quizzes = JSON.parse(localStorage.getItem("quizzes") ?? "[]");
             quizzes.push(newQuiz);
             localStorage.setItem("quizzes", JSON.stringify(quizzes));
-            // await nav(`/all-games?new-game=${newQuizId}`);
         } catch (e) {
             console.log(e);
         }
@@ -73,7 +58,7 @@ export default component$(() => {
 
     return (
         <section class="section bright container">
-            <h3>«{quiz.name}»</h3>
+            <h3>Quiz{quiz.id && ` (id: {${quiz.id}})`}: «{quiz.name}»</h3>
             <div class="container container-center">
                 <div class={editStyles.createQuiz}>
                     <input
