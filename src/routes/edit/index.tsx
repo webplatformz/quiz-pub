@@ -49,7 +49,7 @@ export default component$(() => {
             const newQuizId: { uuid: string, adminToken: string } = await fetch("/api/quiz", {
                 method: "PUT",
                 headers: {
-                    authorization: quiz.adminToken ?? ""
+                    authorization: adminToken.value
                 },
                 body: JSON.stringify(quiz)
             }).then(res => res.json());
