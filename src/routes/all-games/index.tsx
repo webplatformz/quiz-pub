@@ -1,5 +1,5 @@
 import { component$, useStore, useVisibleTask$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { QuizOverviewBox } from "~/lib/quiz-overview-box";
 
 export type StoredQuiz = {
     id: string,
@@ -23,25 +23,9 @@ export default component$(() => {
         <div class="flex flex-col gap-4">
             {
                 store.quizzes.map((game: StoredQuiz, index: number) => (
-                    <Quiz {...game} key={index} />
+                    <QuizOverviewBox {...game} key={index} />
                 ))
             }
         </div>
     </div>;
 });
-
-
-export const Quiz = component$<StoredQuiz>(({ id, lastSaved, name, rounds, questions }) => {
-    return <section class="w-full p-4 bg-slate-800 rounded flex flex-col gap-2">
-        <span class="text-2xl font-bold">{name}</span>
-        <span>Rounds: {rounds}</span>
-        <span>Questions: {questions}</span>
-        <span>{lastSaved}</span>
-        <div class="flex flex-row w-full justify-between gap-4 mt-2">
-            <Link class="button w-1/3 p-3" href={`/edit/${id}`}>Edit</Link>
-            <button class="w-1/3 p-3">Run</button>
-            <button class="w-1/3 p-3 bg-red-700">Delete</button>
-        </div>
-    </section>;
-});
-
