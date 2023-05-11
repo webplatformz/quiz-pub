@@ -1,7 +1,7 @@
 import { component$, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 
-type StoredQuiz = {
+export type StoredQuiz = {
     id: string,
     lastSaved: string,
     name: string,
@@ -38,7 +38,7 @@ export const Quiz = component$<StoredQuiz>(({ id, lastSaved, name, rounds, quest
         <span>Questions: {questions}</span>
         <span>{lastSaved}</span>
         <div class="flex flex-row w-full justify-between gap-4 mt-2">
-            <Link class="w-1/3 p-3" href={`/edit/${id}`}>Edit</Link>
+            <Link class="button w-1/3 p-3" href={`/edit/${id}`}>Edit</Link>
             <button class="w-1/3 p-3">Run</button>
             <button class="w-1/3 p-3 bg-red-700">Delete</button>
         </div>
