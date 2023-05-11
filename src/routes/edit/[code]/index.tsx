@@ -4,15 +4,22 @@ import { Form, routeAction$, useLocation, z, zod$ } from "@builder.io/qwik-city"
 import editStyles from "../edit.module.css";
 import styles from "../styles.css?inline";
 import type { QuizSave } from "~/lib/models/quiz-save.model";
+import { supabase } from "~/lib/db";
+import QuizForm from "~/lib/quiz-form";
 
 export const useSubmitFormAction = routeAction$(
-    (props) => {
-        console.log('props', props);
-        const newQuiz = JSON.parse(props.quizState);
-        console.log('Name deserialized', newQuiz.name);
-        return {
-            success: true,
-        };
+    async (props) => {
+      console.log('props', props);
+      const newQuiz = JSON.parse(props.quizState);
+      const {data} = await supabase
+        .from('quiz')
+        .insert(newQuiz)
+        .select()
+        .single();
+      console.log(data);
+      return {
+        success: true,
+      };
     },
     zod$({
         quizState: z.any()
@@ -25,51 +32,19 @@ export const quizInitializier = (() => {
         rounds: [{
             name: "Round - 1",
             questions: ["Question 1"]
-        }],
-        date: new Date().getTime()
+        }]
     } as QuizSave;
 });
 
 export default component$(() => {
     useStyles$(styles);
     const loc = useLocation();
+    console.log(loc.params.code);
     const action = useSubmitFormAction();
     const quiz = useStore(quizInitializier(), {deep: true});
 
     return (
-        <section class="section bright container">
-            <h3>Quiz (id: {loc.params.code}): «{quiz.name}»</h3>
-            <div class="container container-center">
-                <Form action={action} class={editStyles.createQuiz}>
-                    <input
-                        type="text"
-                        name="name"
-                        value={quiz.name}
-                        placeholder="Quiz name"
-                        class={editStyles.input}
-                        onInput$={(e: any) => quiz.name = e.target.value}
-                    />
-
-                    {quiz.rounds.length && (
-                        <ul class={editStyles.round}>
-                            {quiz.rounds.map((round, index) => (
-                                <RoundList
-                                    key={`round-${index}`}
-                                    quiz={quiz}
-                                    roundIndex={index}
-                                    roundName={round.name}
-                                />
-                            ))}
-                        </ul>
-                    )}
-
-                    <AddRound quiz={quiz}/>
-
-                    <input type="hidden" name="quizState" value={JSON.stringify(quiz)}/>
-                    <button type="submit">save</button>
-                </Form>
-            </div>
-        </section>
+     <QuizForm quiz={quiz} save={action}/>
     );
 });
 

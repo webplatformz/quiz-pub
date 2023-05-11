@@ -1,7 +1,8 @@
 export interface QuizSave {
+  id: string;
   name: string;
   rounds: Round[];
-  date: number;
+  created_at: number;
 }
 
 export interface Round {
