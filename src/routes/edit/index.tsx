@@ -1,9 +1,10 @@
 import { $, component$, useStore, useStyles$ } from "@builder.io/qwik";
-import { useLocation } from "@builder.io/qwik-city";
+import { routeLoader$, useLocation } from "@builder.io/qwik-city";
 
 import editStyles from "./edit.module.css";
 import styles from "./styles.css?inline";
 import type { QuizSave } from "~/lib/models/quiz-save.model";
+import { fetch} from "undici";
 
 export const quizInitializer = (() => {
     return {
@@ -16,10 +17,34 @@ export const quizInitializer = (() => {
     } as QuizSave;
 });
 
+export const useSavedQuiz = routeLoader$(async (requestEvent) => {
+    const searchParams = requestEvent.url.searchParams;
+    const code = searchParams.get("code");
+    if (!code) {
+        return quizInitializer();
+    }
+
+    const quiz = await fetch(`/api/quiz?id=${code}`, {
+        method: "GET"
+    }).then(res => res.json());
+    console.log(quiz);
+    return quizInitializer();
+});
+
 export default component$(() => {
     useStyles$(styles);
+    const savedQuiz = useSavedQuiz();
     const loc = useLocation();
-    const quiz = useStore(quizInitializer(), { deep: true });
+    const quiz = useStore(savedQuiz.value, { deep: true });
+    // useVisibleTask$(async () => {
+    //     const query = new URLSearchParams(window.location.search);
+    //     const code = query.get("code");
+    //     if (!code) {
+    //         return;
+    //     }
+    //
+    // });
+
     const save = $(async () => {
         console.log(JSON.stringify(quiz));
         try {
