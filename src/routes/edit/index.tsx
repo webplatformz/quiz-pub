@@ -4,6 +4,7 @@ import { $, component$, useStore, useStyles$ } from "@builder.io/qwik";
 import editStyles from "./edit.module.css";
 import styles from "./styles.css?inline";
 import type { QuizSave } from "~/lib/models/quiz-save.model";
+import { StoredQuiz } from "~/routes/all-games";
 
 export const quizInitializer = (() => {
     return {
@@ -48,7 +49,10 @@ export default component$(() => {
                 lastSaved: quiz.date
             };
             const quizzes = JSON.parse(localStorage.getItem("quizzes") ?? "[]");
-            quizzes.push(newQuiz);
+            console.log(quizzes);
+            const quizToReplace = quizzes.find((lsQuiz: StoredQuiz) => lsQuiz.id === newQuiz.id);
+            Object.assign(quizToReplace, newQuiz);
+            console.log(quizzes);
             localStorage.setItem("quizzes", JSON.stringify(quizzes));
         } catch (e) {
             console.log(e);
@@ -58,7 +62,7 @@ export default component$(() => {
 
     return (
         <section class="section bright container">
-            <h3>Quiz{quiz.id && ` (id: {${quiz.id}})`}: «{quiz.name}»</h3>
+            <h3>Quiz{quiz.id && ` (id: ${quiz.id})`}: «{quiz.name}»</h3>
             <div class="container container-center">
                 <div class={editStyles.createQuiz}>
                     <input
@@ -70,7 +74,7 @@ export default component$(() => {
                         onInput$={(e: any) => quiz.name = e.target.value}
                     />
 
-                    {quiz.rounds.length && (
+                    {quiz?.rounds?.length && (
                         <ul class={editStyles.round}>
                             {quiz.rounds.map((round, index) => (
                                 <RoundList
