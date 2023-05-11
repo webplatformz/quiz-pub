@@ -23,10 +23,10 @@ export const useSavedQuiz = routeLoader$(async (requestEvent) => {
         return quizInitializer();
     }
 
-    const quiz: QuizSave = await fetch(`https://quiz-pub.pages.dev/api/quiz?id=${code}`, {
+    const quiz: Omit<QuizSave, "id"> = await fetch(`https://quiz-pub.pages.dev/api/quiz?id=${code}`, {
         method: "GET"
     }).then(res => res.json());
-    return quiz;
+    return { id: code, ...quiz };
 });
 
 export default component$(() => {
