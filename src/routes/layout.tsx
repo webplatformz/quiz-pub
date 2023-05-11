@@ -6,20 +6,20 @@ import global from "../global.css?inline";
 import Header from "~/components/header/header";
 
 export const useServerTimeLoader = routeLoader$(() => {
-  return {
-    date: new Date().toISOString()
-  };
+    return {
+        date: new Date().toISOString()
+    };
 });
 
 export default component$(() => {
-  useStyles$(global);
-  useStyles$(styles);
-  return (
-    <>
-      <Header />
-      <main>
-        <Slot />
-      </main>
-    </>
-  );
+    useStyles$(global);
+    useStyles$(styles);
+    return (
+        <>
+            <Header />
+            <main>
+                <Slot />
+            </main>
+        </>
+    );
 });

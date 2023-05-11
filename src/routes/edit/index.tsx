@@ -49,10 +49,12 @@ export default component$(() => {
                 lastSaved: quiz.date
             };
             const quizzes = JSON.parse(localStorage.getItem("quizzes") ?? "[]");
-            console.log(quizzes);
             const quizToReplace = quizzes.find((lsQuiz: StoredQuiz) => lsQuiz.id === newQuiz.id);
-            Object.assign(quizToReplace, newQuiz);
-            console.log(quizzes);
+            if (quizToReplace) {
+                Object.assign(quizToReplace, newQuiz);
+            } else {
+                quizzes.push(newQuiz);
+            }
             localStorage.setItem("quizzes", JSON.stringify(quizzes));
         } catch (e) {
             console.log(e);

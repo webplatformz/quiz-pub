@@ -32,6 +32,7 @@ export default component$(() => {
 
 
 const Quiz = component$<StoredQuiz>(({ id, lastSaved, name, rounds, questions }) => {
+
     return <section class="w-full p-4 bg-slate-800 rounded flex flex-col gap-2">
         <span class="text-2xl font-bold">{name}</span>
         <span>Rounds: {rounds}</span>
