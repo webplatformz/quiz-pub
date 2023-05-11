@@ -1,4 +1,5 @@
 export interface QuizSave {
+  id: string | undefined;
   name: string;
   rounds: Round[];
   date: number;

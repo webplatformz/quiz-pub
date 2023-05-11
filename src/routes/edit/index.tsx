@@ -1,9 +1,10 @@
-import {$, component$, useStore, useStyles$, useVisibleTask$} from "@builder.io/qwik";
-import {type DocumentHead, routeLoader$} from "@builder.io/qwik-city";
+import { type DocumentHead, routeLoader$ } from "@builder.io/qwik-city";
+import { $, component$, useStore, useStyles$ } from "@builder.io/qwik";
 
 import editStyles from "./edit.module.css";
 import styles from "./styles.css?inline";
-import type {QuizSave} from "~/lib/models/quiz-save.model";
+import type { QuizSave } from "~/lib/models/quiz-save.model";
+import { StoredQuiz } from "~/routes/all-games";
 
 export const quizInitializer = (() => {
     return {
@@ -23,32 +24,18 @@ export const useSavedQuiz = routeLoader$(async (requestEvent) => {
         return quizInitializer();
     }
 
-    const quiz: QuizSave = await fetch(`https://quiz-pub.pages.dev/api/quiz?id=${code}`, {
+    const quiz: Omit<QuizSave, "id"> = await fetch(`https://quiz-pub.pages.dev/api/quiz?id=${code}`, {
         method: "GET"
     }).then(res => res.json());
-    console.log(quiz);
-    return quiz;
+    return { id: code, ...quiz };
 });
 
 export default component$(() => {
     useStyles$(styles);
     const savedQuiz = useSavedQuiz();
-    const quiz = useStore(savedQuiz.value, {deep: true});
-    useVisibleTask$(async () => {
-        const query = new URLSearchParams(window.location.search);
-        const code = query.get("code");
-        if (!code) {
-            return;
-        }
-        const cfQuiz: QuizSave = await fetch(`/api/quiz?id=${code}`, {
-            method: "GET"
-        }).then(res => res.json());
-        console.log(cfQuiz);
-
-    });
+    const quiz = useStore(savedQuiz.value, { deep: true });
 
     const save = $(async () => {
-        console.log(JSON.stringify(quiz));
         try {
             const newQuizId = await fetch("/api/quiz", {
                 method: "PUT",
@@ -62,9 +49,11 @@ export default component$(() => {
                 lastSaved: quiz.date
             };
             const quizzes = JSON.parse(localStorage.getItem("quizzes") ?? "[]");
-            quizzes.push(newQuiz);
+            console.log(quizzes);
+            const quizToReplace = quizzes.find((lsQuiz: StoredQuiz) => lsQuiz.id === newQuiz.id);
+            Object.assign(quizToReplace, newQuiz);
+            console.log(quizzes);
             localStorage.setItem("quizzes", JSON.stringify(quizzes));
-            // await nav(`/all-games?new-game=${newQuizId}`);
         } catch (e) {
             console.log(e);
         }
@@ -73,7 +62,7 @@ export default component$(() => {
 
     return (
         <section class="section bright container">
-            <h3>«{quiz.name}»</h3>
+            <h3>Quiz{quiz.id && ` (id: ${quiz.id})`}: «{quiz.name}»</h3>
             <div class="container container-center">
                 <div class={editStyles.createQuiz}>
                     <input
@@ -85,7 +74,7 @@ export default component$(() => {
                         onInput$={(e: any) => quiz.name = e.target.value}
                     />
 
-                    {quiz.rounds.length && (
+                    {quiz?.rounds?.length && (
                         <ul class={editStyles.round}>
                             {quiz.rounds.map((round, index) => (
                                 <RoundList
@@ -97,7 +86,7 @@ export default component$(() => {
                         </ul>
                     )}
 
-                    <AddRound quiz={quiz}/>
+                    <AddRound quiz={quiz} />
                     <button type="submit" onClick$={save}>save</button>
                 </div>
             </div>
