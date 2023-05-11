@@ -17,7 +17,7 @@ export default component$(() => {
           </button>
         </div>
         <div class="flex flex-row justify-between gap-4">
-          <Link href={"/create"} class="button w-full">Create Quiz</Link>
+          <Link href={"/edit"} class="button w-full">Create Quiz</Link>
           <Link href={"/all-games"} class="button w-full">My Quizzes</Link>
         </div>
       </div>
