@@ -1,5 +1,5 @@
 import {$, component$, useStore, useStyles$, useVisibleTask$} from "@builder.io/qwik";
-import {routeLoader$} from "@builder.io/qwik-city";
+import {type DocumentHead, routeLoader$} from "@builder.io/qwik-city";
 
 import editStyles from "./edit.module.css";
 import styles from "./styles.css?inline";
@@ -220,3 +220,7 @@ export const RoundList = component$<RoundProps>((props) => {
         </li>
     );
 });
+
+export const head: DocumentHead = {
+    title: 'Quiz Pub',
+};
