@@ -4,7 +4,7 @@ import { $, component$, useStore, useStyles$ } from "@builder.io/qwik";
 import editStyles from "./edit.module.css";
 import styles from "./styles.css?inline";
 import type { QuizSave } from "~/lib/models/quiz-save.model";
-import { StoredQuiz } from "~/routes/all-games";
+import type { StoredQuiz } from "~/routes/all-games";
 
 export const quizInitializer = (() => {
     return {

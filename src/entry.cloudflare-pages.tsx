@@ -12,7 +12,7 @@ import qwikCityPlan from "@qwik-city-plan";
 import { manifest } from "@qwik-client-manifest";
 import render from "./entry.ssr";
 import { randomId } from "~/lib/utils/random-id";
-import { QuizSave } from "~/lib/models/quiz-save.model";
+import type { QuizSave } from "~/lib/models/quiz-save.model";
 
 declare global {
     interface QwikCityPlatform extends PlatformCloudflarePages {
