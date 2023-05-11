@@ -87,7 +87,7 @@ export default component$(() => {
                     )}
 
                     <AddRound quiz={quiz} />
-                    <button type="submit" onClick$={save}>save</button>
+                    <button type="submit" name="submit" onClick$={save}>save</button>
                 </div>
             </div>
         </section>
