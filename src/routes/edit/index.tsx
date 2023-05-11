@@ -1,5 +1,5 @@
-import { $, component$, useStore, useStyles$, useVisibleTask$ } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import {$, component$, useStore, useStyles$, useVisibleTask$} from "@builder.io/qwik";
+import {routeLoader$} from "@builder.io/qwik-city";
 
 import editStyles from "./edit.module.css";
 import styles from "./styles.css?inline";
@@ -33,7 +33,7 @@ export const useSavedQuiz = routeLoader$(async (requestEvent) => {
 export default component$(() => {
     useStyles$(styles);
     const savedQuiz = useSavedQuiz();
-    const quiz = useStore(savedQuiz.value, { deep: true });
+    const quiz = useStore(savedQuiz.value, {deep: true});
     useVisibleTask$(async () => {
         const query = new URLSearchParams(window.location.search);
         const code = query.get("code");
