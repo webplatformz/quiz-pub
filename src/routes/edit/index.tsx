@@ -1,4 +1,5 @@
-import {$, component$, useStore, useStyles$} from "@builder.io/qwik";
+import { $, component$, useStore, useStyles$, useVisibleTask$ } from "@builder.io/qwik";
+import { routeLoader$ } from "@builder.io/qwik-city";
 
 import editStyles from "./edit.module.css";
 import styles from "./styles.css?inline";
@@ -15,9 +16,37 @@ export const quizInitializer = (() => {
     } as QuizSave;
 });
 
+export const useSavedQuiz = routeLoader$(async (requestEvent) => {
+    const searchParams = requestEvent.url.searchParams;
+    const code = searchParams.get("code");
+    if (!code) {
+        return quizInitializer();
+    }
+
+    const quiz: QuizSave = await fetch(`https://quiz-pub.pages.dev/api/quiz?id=${code}`, {
+        method: "GET"
+    }).then(res => res.json());
+    console.log(quiz);
+    return quiz;
+});
+
 export default component$(() => {
     useStyles$(styles);
-    const quiz = useStore(quizInitializer(), {deep: true});
+    const savedQuiz = useSavedQuiz();
+    const quiz = useStore(savedQuiz.value, { deep: true });
+    useVisibleTask$(async () => {
+        const query = new URLSearchParams(window.location.search);
+        const code = query.get("code");
+        if (!code) {
+            return;
+        }
+        const cfQuiz: QuizSave = await fetch(`/api/quiz?id=${code}`, {
+            method: "GET"
+        }).then(res => res.json());
+        console.log(cfQuiz);
+
+    });
+
     const save = $(async () => {
         console.log(JSON.stringify(quiz));
         try {
