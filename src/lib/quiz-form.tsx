@@ -1,10 +1,9 @@
 import { component$ } from "@builder.io/qwik";
 import { ActionStore, Form } from "@builder.io/qwik-city";
 import editStyles from "~/routes/edit/edit.module.css";
-import { AddRound, RoundList } from "~/routes/edit/[code]";
 import { QuizSave } from "~/lib/models/quiz-save.model";
 
-export default component$((props: {quiz: QuizSave, save: ActionStore<unknown, {quizState: any}, boolean>}) => {
+export default component$((props: { quiz: QuizSave, save: ActionStore<unknown, { quizState: any }, boolean> }) => {
   const quiz = props.quiz;
   return (
     <section class="section bright container">
@@ -33,12 +32,117 @@ export default component$((props: {quiz: QuizSave, save: ActionStore<unknown, {q
             </ul>
           )}
 
-          <AddRound quiz={quiz}/>
+          <AddRound quiz={quiz} />
 
-          <input type="hidden" name="quizState" value={JSON.stringify(quiz)}/>
+          <input type="hidden" name="quizState" value={JSON.stringify(quiz)} />
           <button type="submit">save</button>
         </Form>
       </div>
     </section>
-  )
-})
+  );
+});
+
+interface QuizProps {
+  quiz: QuizSave;
+}
+
+const AddRound = component$<QuizProps>((props) => {
+  const quiz = props.quiz;
+  return (
+    <button type="button"
+            onClick$={() => {
+              quiz.rounds.push({
+                name: "Round - " + (quiz.rounds.length + 1),
+                questions: ["Question 1"]
+              });
+            }}>
+      Add Round
+    </button>
+  );
+});
+
+interface QuestionProps {
+  quiz: QuizSave;
+  roundIndex: number;
+  questionIndex: number;
+  question: string;
+}
+
+const QuestionList = component$<QuestionProps>((props) => {
+  const quiz = props.quiz;
+  const rIndex: number = props.roundIndex;
+  const qIndex: number = props.questionIndex;
+  const question: string = props.question;
+  return (
+    <>
+      <label for={`round-${rIndex}-Q-${qIndex}`}>
+        {`Question ${qIndex + 1}`}
+      </label>
+      <input type="text"
+             id={`round-${rIndex}-Q-${qIndex}`}
+             name={`round-${rIndex}-Q-${qIndex}`}
+             placeholder={question}
+             value={quiz.rounds[rIndex].questions[qIndex]}
+             class={editStyles.input}
+             onInput$={(e: any) => {
+               const round = quiz.rounds[rIndex];
+               round.questions = round.questions.map((q, i) => (i === qIndex ? e.target.value : q));
+               quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
+             }}
+      />
+    </>
+  );
+});
+
+interface RoundProps {
+  quiz: QuizSave;
+  roundIndex: number;
+  roundName: string;
+}
+
+const RoundList = component$<RoundProps>((props) => {
+  const quiz = props.quiz;
+  const rIndex: number = props.roundIndex;
+  const roundName: string = props.roundName;
+  return (
+    <li>
+      <label for={`round-${props.roundIndex}`}>
+        {`Round ${props.roundIndex + 1}`}
+      </label>
+      <input
+        type="text"
+        id={`round-${rIndex}`}
+        name={`round-${rIndex}`}
+        placeholder={roundName}
+        class={editStyles.input}
+        value={quiz.rounds[rIndex].name}
+        onInput$={(e: any) => {
+          const round = quiz.rounds[rIndex];
+          round.name = e.target.value;
+          quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
+        }}
+      />
+
+      {(quiz.rounds[rIndex].questions || []).map((question, qIndex) => (
+        <QuestionList
+          key={`round-${rIndex}-Q-${qIndex}`}
+          quiz={quiz}
+          questionIndex={qIndex}
+          roundIndex={rIndex}
+          question={`Question ${qIndex + 1}`}
+        />
+      ))}
+      <button
+        type="button"
+        onClick$={() => {
+          const round = quiz.rounds[rIndex];
+          round.questions = [...round.questions, `Question ${round.questions.length + 1}`];
+          quiz.rounds = quiz.rounds.map((r, i) => (i === rIndex ? round : r));
+        }}
+      >
+        Add Question
+      </button>
+      <div></div>
+    </li>
+  );
+});
