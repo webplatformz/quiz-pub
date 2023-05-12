@@ -1,36 +1,73 @@
-import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import type { NoSerialize } from "@builder.io/qwik";
+import { $, component$, noSerialize, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
-import { StoredQuiz } from "~/routes/all-games";
+import type { StoredQuiz } from "~/routes/all-games";
+
+type Message = {
+    type: "PLAYER_UPDATE",
+    value: string[]
+};
 
 export default component$(() => {
     const location = useLocation();
-    const connected = useSignal(false);
-    useVisibleTask$(({ cleanup }) => {
+    const store = useStore<{ ws: NoSerialize<WebSocket | undefined> }>({ ws: undefined });
+    const quiz = useStore<{ players: string[] }>({ players: [] });
+    const join = $(() => {
         const code = location.params.code;
+        const name = new URL(location.url).searchParams.get("name");
+        if (!name) {
+            return;
+        }
         const quizzes: StoredQuiz[] = JSON.parse(localStorage.getItem("quizzes") ?? "[]");
         const quiz = quizzes.find(quiz => quiz.id === code);
-        try {
-            location.params;
-            const auth = quiz ? `${quiz.adminToken}` : "";
-            const ws = new WebSocket(`wss://${window.location.host}/joinquiz/${code}?auth=${auth}`);
-            ws.onmessage = (msg) => {
-                console.log(msg.data);
-            };
-            ws.onopen = () => {
-                connected.value = true;
-                ws.send(JSON.stringify({ message: "whatup" }));
-            };
 
-            ws.onclose = () => {
-                connected.value = false;
-                console.log("closed");
+        try {
+            const auth = quiz ? `&auth=${quiz.adminToken}` : "";
+            const ws = new WebSocket(`wss://${window.location.host}/joinquiz/${code}?name=${name}${auth}`);
+            ws.onopen = () => {
+                store.ws = noSerialize(ws);
             };
-            cleanup(() => ws.close());
         } catch (e) {
             console.log(e);
         }
     });
+
+    useVisibleTask$(async () => {
+        await join();
+    });
+
+    useVisibleTask$(({ track, cleanup }) => {
+        track(() => store.ws);
+        if (store.ws) {
+            store.ws.onmessage = (msg) => {
+                try {
+
+                    const message: Message = JSON.parse(msg.data);
+                    switch (message.type) {
+                        case "PLAYER_UPDATE": {
+                            quiz.players = message.value;
+                        }
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            };
+            store.ws.onclose = async () => {
+                console.log("close");
+                await join();
+            };
+            store.ws.onerror = (error) => {
+                console.log(error);
+            };
+        }
+        cleanup(() => store.ws?.close());
+    });
     return <div>
-        <span>Connected: {`${connected.value}`}</span>
+        <span>Connected: {`${!!store.ws}`}</span>
+        <ul>{
+            quiz.players.map((player, index) => {
+                return <li key={index}>{player}</li>;
+            })
+        }</ul>
     </div>;
 });

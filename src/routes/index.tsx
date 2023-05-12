@@ -8,22 +8,23 @@ export const QuizContext = createContextId<{ currentQuiz: string }>(
 
 export default component$(() => {
     const joinCode = useSignal("");
+    const name = useSignal("");
     const nav = useNavigate();
-    const isInvalidJoinCode = useComputed$(() => joinCode.value === "" || joinCode.value.length !== 6);
+    const isInvalid = useComputed$(() => joinCode.value === "" || joinCode.value.length !== 6 || name.value === "");
     const playQuiz = $(async () => {
-        if (isInvalidJoinCode.value) {
+        if (isInvalid.value) {
             return;
         }
-        return nav(`/play/${joinCode.value}`);
+        return nav(`/play/${joinCode.value}?name=${name.value}`);
     });
     return (
         <div class="h-screen flex flex-col pt-[30vh]">
             <div class="flex flex-col justify-center w-full max-w-lg gap-4 mx-auto">
                 <div class="flex flex-row justify-between gap-4 ">
-                    <input value={joinCode.value} onInput$={(e) => {
-                        joinCode.value = (e.target as HTMLInputElement).value;
-                    }} class="text-black p-2 rounded w-full" placeholder="Join Code" />
-                    <button class="block w-24 disabled:bg-gray-600" disabled={isInvalidJoinCode.value}
+                    <input bind:value={joinCode} class="text-black p-2 rounded w-full" placeholder="Join Code" />
+                    <input bind:value={name} class="text-black p-2 rounded w-full" placeholder="Name" />
+                    <button class="block w-24 disabled:bg-gray-600"
+                            disabled={isInvalid.value}
                             onClick$={playQuiz}>
                         Join
                     </button>

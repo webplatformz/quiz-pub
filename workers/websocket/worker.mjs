@@ -5,7 +5,6 @@ const fetch = async (request, env) => {
         return new Response("wtf are you doing", { status: 400 });
     }
     const url = new URL(request.url);
-    throw new Error(url.searchParams.get("auth"));
     const path = url.pathname.slice(1).split("/");
     if (!path[1]) {
         return new Response("wtf are you doing 2", { status: 400 });
@@ -15,7 +14,7 @@ const fetch = async (request, env) => {
     }
     const id = env.rooms.idFromName(path[1]);
     const room = env.rooms.get(id);
-    return room.fetch(request, env);
+    return room.fetch(request);
 };
 
 export { ChatRoom };
