@@ -11,8 +11,8 @@ export default component$(() => {
         const quiz = quizzes.find(quiz => quiz.id === code);
         try {
             location.params;
-            const auth = quiz ? `${quiz.adminToken}@` : "";
-            const ws = new WebSocket(`wss://${auth}${window.location.host}/joinquiz/${code}`);
+            const auth = quiz ? `${quiz.adminToken}` : "";
+            const ws = new WebSocket(`wss://${window.location.host}/joinquiz/${code}?auth=${auth}`);
             ws.onmessage = (msg) => {
                 console.log(msg.data);
             };

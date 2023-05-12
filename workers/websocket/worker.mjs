@@ -4,8 +4,8 @@ const fetch = async (request, env) => {
     if (request.headers.get("Upgrade") !== "websocket") {
         return new Response("wtf are you doing", { status: 400 });
     }
-    return new Response(request.headers.get("Authorization"));
     const url = new URL(request.url);
+    throw new Error(url.searchParams.get("auth"));
     const path = url.pathname.slice(1).split("/");
     if (!path[1]) {
         return new Response("wtf are you doing 2", { status: 400 });
