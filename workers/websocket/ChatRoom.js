@@ -83,9 +83,9 @@ class ChatRoom {
 
     broadcast(msg) {
         const serializedMsg = JSON.stringify(msg);
-        this.sessions.forEach(session => {
-            session.webSocket.send(serializedMsg);
-        });
+        // this.sessions.forEach(session => {
+        //     session.webSocket.send(serializedMsg);
+        // });
         this.host?.send(serializedMsg);
     }
 }

@@ -67,6 +67,7 @@ export default component$(() => {
         }
         addHandlers(ws);
         cleanup(() => {
+            console.log("cleanup");
             ws.close();
         });
     });
