@@ -10,16 +10,10 @@ type Message = {
 
 export default component$(() => {
     const location = useLocation();
-    const store = useStore<{ ws: NoSerialize<WebSocket | undefined> }>({ ws: undefined });
     const quiz = useStore<{ players: string[] }>({ players: [] });
 
     useVisibleTask$(async ({ cleanup }) => {
         const join = (): WebSocket | undefined => {
-            console.log("join");
-            if (store.ws && store.ws.readyState !== WebSocket.CLOSED) {
-                return;
-            }
-            console.log("join 2");
             const code = location.params.code;
             const name = new URL(location.url).searchParams.get("name");
             if (!name) {
@@ -37,7 +31,9 @@ export default component$(() => {
         };
 
         const addHandlers = (ws: WebSocket) => {
+            console.log("addHandlers");
             ws.onmessage = (msg) => {
+                console.log(msg);
                 try {
                     const message: Message = JSON.parse(msg.data);
                     switch (message.type) {
@@ -54,7 +50,7 @@ export default component$(() => {
             };
             ws.onclose = async () => {
                 console.log("close");
-                const newWs = await join();
+                const newWs = join();
                 if (!newWs) {
                     console.log("fuck ws couldnt be opened");
                     return;
@@ -75,7 +71,6 @@ export default component$(() => {
     });
 
     return <div>
-        <span>Connected: {`${store.ws?.readyState}`}</span>
         <ul>{
             quiz.players.map((player, index) => {
                 return <li key={index}>{player}</li>;

@@ -73,9 +73,9 @@ class ChatRoom {
 
     async handleSession(webSocket, name) {
         webSocket.accept();
-        this.sessions.push({ webSocket, name });
 
         webSocket.onopen = () => {
+            this.sessions.push({ webSocket, name });
             const players = this.sessions.map(session => session.name);
             const msg = {
                 type: "PLAYER_UPDATE",
@@ -89,7 +89,7 @@ class ChatRoom {
         };
     }
 
-    async broadcast(msg) {
+    broadcast(msg) {
         const serializedMsg = JSON.stringify(msg);
         this.sessions.forEach(session => {
             session.webSocket.send(serializedMsg);
