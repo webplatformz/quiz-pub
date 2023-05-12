@@ -1,6 +1,14 @@
-import { test, expect } from '@playwright/test';
+import {expect, Page, test} from '@playwright/test';
 
-test('homepage has empty Title with placeholder characters', async ({ page }) => {
+export const saveQuizMock = (page: Page): Promise<void> => page.route('http://localhost:4173/api/quiz', route => {
+  route.fulfill({
+    status: 200,
+    body: JSON.stringify({"uuid":"SRAQDO","adminToken":"a4caffff-1198-49c5-8bcf-6f577586846f"})
+  });
+});
+
+test('Use Case - create and save a quiz', async ({ page }) => {
+  await saveQuizMock(page);
   await page.goto('/edit');
 
   await expect(page).toHaveTitle("Quiz Pub");
@@ -18,16 +26,13 @@ test('homepage has empty Title with placeholder characters', async ({ page }) =>
   const inputRound1Question1 = page.locator('#round-0-Q-0');
   await expect(inputRound1Question1).toHaveValue('q11');
 
-  // await page.getByRole('button', { name: /submit/i }).click();
+  const responsePromise = page.waitForResponse(response => response.url().includes('/api/'));
   await page.locator('button[type=submit]').click();
-  const response = await page
-      .waitForResponse(response => response.url().includes('/quiz-pub.pages.dev/') && response.status() === 200);
-  console.log('RESPONSE ' + (await response.body()));
-  // Listen for all console events and handle errors
-  page.on('console', msg => {
-    if (msg.type() === 'error')
-      console.log(`Error text: "${msg.text()}"`);
-    // the console.error:
-    // PUT http://localhost:5173/api/quiz 404 (Not Found)
-  });
+  const response = await responsePromise;
+  expect(response.status()).toBe(200);
+
+  //await page.goto('/edit/?code=SRAQDO');
+
+  //await expect(inputQuizName).toContainText('SRAQDO');
+
 });
