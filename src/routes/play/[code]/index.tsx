@@ -13,6 +13,11 @@ export default component$(() => {
     const store = useStore<{ ws: NoSerialize<WebSocket | undefined> }>({ ws: undefined });
     const quiz = useStore<{ players: string[] }>({ players: [] });
     const join = $(() => {
+        console.log("join");
+        if (store.ws && store.ws.readyState !== WebSocket.CLOSED) {
+            return;
+        }
+        console.log("join 2");
         const code = location.params.code;
         const name = new URL(location.url).searchParams.get("name");
         if (!name) {
@@ -38,10 +43,10 @@ export default component$(() => {
 
     useVisibleTask$(({ track, cleanup }) => {
         track(() => store.ws);
-        if (store.ws) {
+        if (store.ws && store.ws.readyState === WebSocket.CLOSED) {
+
             store.ws.onmessage = (msg) => {
                 try {
-
                     const message: Message = JSON.parse(msg.data);
                     switch (message.type) {
                         case "PLAYER_UPDATE": {
@@ -60,7 +65,10 @@ export default component$(() => {
                 console.log(error);
             };
         }
-        cleanup(() => store.ws?.close());
+        cleanup(() => {
+            console.log("cleanup");
+            store.ws?.close();
+        });
     });
     return <div>
         <span>Connected: {`${!!store.ws}`}</span>
