@@ -1,16 +1,3 @@
-const test = {
-    id: "HMHTPQ",
-    name: "Quiz 1",
-    rounds: [
-        {
-            name: "Round 1",
-            questions: ["Question 1", "Q 2asdf"]
-        }
-    ],
-    date: 1683808403140,
-    adminToken: "51506aa2-e6ca-4c85-83d0-a287df88f3b1"
-};
-
 // states:
 // - REGISTRATION
 // - ROUND X
@@ -68,7 +55,7 @@ class ChatRoom {
                 type: "PLAYER_UPDATE",
                 value: players
             };
-            this.broadcast(msg);
+            this.host?.send(JSON.stringify(msg));
         };
 
         webSocket.onmessage = msg => {
@@ -78,9 +65,9 @@ class ChatRoom {
 
     async handleSession(webSocket, name) {
         webSocket.accept();
+        this.sessions.push({ webSocket, name });
 
         webSocket.onopen = () => {
-            this.sessions.push({ webSocket, name });
             const players = this.sessions.map(session => session.name);
             const msg = {
                 type: "PLAYER_UPDATE",
@@ -99,7 +86,7 @@ class ChatRoom {
         this.sessions.forEach(session => {
             session.webSocket.send(serializedMsg);
         });
-        this.host.send(serializedMsg);
+        this.host?.send(serializedMsg);
     }
 }
 
