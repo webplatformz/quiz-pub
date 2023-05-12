@@ -50,6 +50,23 @@
   margin-top: 30px;
 }
 
+.notification {
+  border: 1px solid black;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  padding: 15px 20px;
+}
+
+.notification.error {
+  background: rgba(255, 0, 0, 0.25);
+  border-color: rgba(255, 0, 0, 1);
+}
+
+.notification.success {
+  background: rgba(34, 139, 34, 0.25);
+  border-color: rgba(34, 139, 34, 1);
+}
+
 @media screen and (min-width: 768px) {
   .input {
     padding: 23px 35px;

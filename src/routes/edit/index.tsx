@@ -43,6 +43,10 @@ export default component$(() => {
         }
         adminToken.value = sq.adminToken;
     });
+    const notification = useStore({
+        type: '',
+        msg: ''
+    });
 
     const save = $(async () => {
         try {
@@ -61,6 +65,14 @@ export default component$(() => {
                 lastSaved: quiz.date,
                 adminToken: newQuizId.adminToken
             };
+            console.log(newQuizId);
+            notification.type = 'success';
+            if (newQuizId) {
+                notification.msg = JSON.stringify(newQuizId);
+            } else {
+                notification.msg = `but no token found!`;
+            }
+
             const quizzes = JSON.parse(localStorage.getItem("quizzes") ?? "[]");
             const quizToReplace = quizzes.find((lsQuiz: StoredQuiz) => lsQuiz.id === newQuiz.id);
             if (quizToReplace) {
@@ -69,8 +81,10 @@ export default component$(() => {
                 quizzes.push(newQuiz);
             }
             localStorage.setItem("quizzes", JSON.stringify(quizzes));
-        } catch (e) {
-            console.log(e);
+        } catch (e: any) {
+            notification.type = 'error';
+            notification.msg = e.errorMessage;
+            console.log('save catch error', JSON.stringify(e));
         }
 
     });
@@ -103,6 +117,12 @@ export default component$(() => {
 
                     <AddRound quiz={quiz} />
                     <button type="submit" name="submit" onClick$={save}>save</button>
+
+                    {notification.type && (
+                        <p class={[editStyles.notification, notification.type === 'error' ? editStyles.error : editStyles.success]}>
+                            Save {notification.type.toUpperCase()}: <code>{notification.msg}</code>
+                        </p>
+                    )}
                 </div>
             </div>
         </section>
