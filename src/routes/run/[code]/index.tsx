@@ -3,7 +3,7 @@ import { routeLoader$ } from "@builder.io/qwik-city";
 import { supabase } from "~/lib/db";
 import { Round } from "~/lib/models/quiz-save.model";
 
-interface QuizGame {
+interface QuizHostGame {
   id: string;
   name: string;
   join_code: string;
@@ -18,7 +18,7 @@ export const useLoadQuiz = routeLoader$(async (re) => {
     .select()
     .eq("id", gameId)
     .single();
-  return data as QuizGame;
+  return data as QuizHostGame;
 });
 
 export default component$(() => {
