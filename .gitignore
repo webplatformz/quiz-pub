@@ -3,6 +3,8 @@
 /lib
 /lib-types
 /server
+/test-results
+/playwright-report
 
 # Development
 node_modules
