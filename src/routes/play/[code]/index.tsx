@@ -1,4 +1,3 @@
-import type { NoSerialize } from "@builder.io/qwik";
 import { component$, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import type { StoredQuiz } from "~/routes/all-games";
@@ -17,7 +16,7 @@ export default component$(() => {
             const code = location.params.code;
             const name = new URL(location.url).searchParams.get("name");
             if (!name) {
-                return;
+                return undefined;
             }
             const quizzes: StoredQuiz[] = JSON.parse(localStorage.getItem("quizzes") ?? "[]");
             const quiz = quizzes.find(quiz => quiz.id === code);
@@ -28,6 +27,7 @@ export default component$(() => {
             } catch (e) {
                 console.log(e);
             }
+            return undefined;
         };
 
         const addHandlers = (ws: WebSocket) => {
@@ -60,6 +60,7 @@ export default component$(() => {
         };
 
         const ws = join();
+        console.log(ws);
         if (!ws) {
             console.log("fuck ws couldnt be openend");
             return;

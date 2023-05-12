@@ -63,7 +63,12 @@ class ChatRoom {
         this.host = webSocket;
 
         webSocket.onopen = () => {
-            // webSocket.send()
+            const players = this.sessions.map(session => session.name);
+            const msg = {
+                type: "PLAYER_UPDATE",
+                value: players
+            };
+            this.broadcast(msg);
         };
 
         webSocket.onmessage = msg => {
