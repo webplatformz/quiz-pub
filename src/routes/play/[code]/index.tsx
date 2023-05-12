@@ -1,15 +1,18 @@
 import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
-
+import { StoredQuiz } from "~/routes/all-games";
 
 export default component$(() => {
     const location = useLocation();
     const connected = useSignal(false);
     useVisibleTask$(({ cleanup }) => {
         const code = location.params.code;
+        const quizzes: StoredQuiz[] = JSON.parse(localStorage.getItem("quizzes") ?? "[]");
+        const quiz = quizzes.find(quiz => quiz.id === code);
         try {
             location.params;
-            const ws = new WebSocket(`wss://${window.location.host}/joinquiz/${code}`);
+            const auth = quiz ? `${quiz.adminToken}@` : "";
+            const ws = new WebSocket(`wss://${auth}${window.location.host}/joinquiz/${code}`);
             ws.onmessage = (msg) => {
                 console.log(msg.data);
             };
